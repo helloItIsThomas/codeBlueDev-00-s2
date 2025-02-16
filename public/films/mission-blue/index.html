@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+
+<script src="/js/gsap/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollToPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/split-type"></script>
+<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+
+<link rel="icon" href="/assets/images/favicon.ico" type="image/x-icon"/>
+
+<script type="module" src="/js/setup.js"></script>
+
+
+<script type="module" src="/js/mobileDetection.js"></script>
+<script type="module" src="/js/utils.js"></script>
+<script type="module">
+  import {toggleMobileMenu} from "/js/nav.js";
+  toggleMobileMenu();
+</script>
+
+<html lang="en">
+  <head>
+    <script type="module" src="/js/globalVars.js"></script>
+
+    <meta charset="UTF-8"/>
+    <meta property=”og:url content=”https://github.com/timClicks/glsl-shader-intro”/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <link rel="stylesheet" href="https://unpkg.com/lenis@1.1.18/dist/lenis.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/base.css"/>
+    <link rel="stylesheet" href="/styles/mobile.css"/>
+    <link rel="stylesheet" href="/styles/nav.css"/>
+    <link rel="stylesheet" href="/styles/fonts.css"/>
+    <link rel="stylesheet" href="/styles/media.css"/>
+    <link rel="stylesheet" href="/styles/footer.css"/>
+    <link rel="stylesheet" href="/styles/globals.css"/>
+    <link rel="stylesheet" href="/styles/featuredPartnership.css"/>
+    <link rel="stylesheet" href="/styles/buttons.css"/>
+    <link rel="stylesheet" href="/styles/featuredFilm.css"/>
+    <link rel="stylesheet" href="/styles/purpose.css"/>
+    <link rel="stylesheet" href="/styles/splash.css"/>
+    <link rel="stylesheet" href="/styles/mission.css"/>
+    <link rel="stylesheet" href="/styles/grids.css"/>
+    <link rel="stylesheet" href="/styles/textFX.css"/>
+    <link rel="stylesheet" href="/styles/subFeaturedFilm.css"/>
+    <link rel="stylesheet" href="/styles/baseGrid.css"/>
+    <link rel="stylesheet" href="/styles/conservationGrantees.css"/>
+    <link rel="stylesheet" href="/styles/story.css"/>
+    <link rel="stylesheet" href="/styles/header.css"/>
+    <link rel="stylesheet" href="/styles/slidingTextbox.css"/>
+    <title id="page-title"></title>
+  </head>
+  <body>
+    <div class="desktopOnlyBlock">
+      <div class="navBar margin0LR">
+      <div class="navLogo">
+            <a href="/index.html">
+                  <img src="/assets/images/logo.svg" alt="Code Blue">
+            </a>
+      </div>
+      <div class="navLinks">
+            <div class="navLink">
+                  <a href="/pages/impactMedia" >
+                        <span class="navTitle">IMPACT MEDIA</span>
+                  </a>
+            </div>
+            <div class="navLink">
+                  <a href="/pages/conservationGrantees" >
+                        <span class="navTitle">CONSERVATION GRANTEES</span>
+                  </a>
+            </div>
+            <div class="navLink">
+                  <a href="/pages/story" >
+                        <span class="navTitle">ABOUT</span>
+                  </a>
+            </div>
+      </div>
+</div>
+    </div>
+    <div class="mobileOnlyBlock">
+      <div class="navBar margin0LR">
+      <div class="navLogo">
+            <a href="/index.html">
+                  <img src="/assets/images/logo.svg" alt="Code Blue">
+            </a>
+      </div>
+      <div id="hamburgerMenu">
+            <img id="burgerIcon" src="/assets/icons/hamburger.svg" alt="Menu"></img>
+            <img id="burgerWavyIcon" src="/assets/icons/burger-wavy.svg" alt="Menu"></img>
+      </div>
+</div>
+    </div>
+    
+    <div class="desktopOnlyBlock" id="cursorCanvas"></div>
+    
+
+
+
+
+<script type="module">
+  import {sv} from "/js/cursor/variables.js";
+  import {v} from "/js/variables.js";
+  import {initAwardTicker} from "/js/awardTicker.js";
+  const awardsTickerContainer = document.querySelector(".awardsTickerContainer");
+  const awardsTicker = document.querySelector(".awardsTicker");
+
+  if (v.isMobile) {
+    //document.querySelector(".mobileHeaderHero").style.display = "block";
+  } else {
+    //document.querySelector(".desktopHeaderHero").style.display = "block";
+  }
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    initAwardTicker(awardsTickerContainer, awardsTicker);
+    const pageLoadingScreen = document.getElementById("pageLoadingScreen");
+
+    window.scrollTo({
+      top: 0, // Replace with your desired vertical scroll position
+      behavior: "instant"
+    });
+    // pageLoadingScreen.style.display = "none";
+    pageLoadingScreen.style.display = "block";
+    document.body.style.overflow = "hidden";
+    sv
+      .lenis
+      .stop();
+    window.scrollTo({
+      top: 0, // Replace with your desired vertical scroll position
+      behavior: "instant"
+    });
+
+    gsap.to(pageLoadingScreen, {
+      opacity: 0,
+      duration: 0.5,
+      delay: 2,
+      ease: "power3.out",
+      onComplete: () => {
+        pageLoadingScreen.style.display = "none";
+        document.body.style.overflow = "auto";
+        pageLoadingScreen.style.pointerEvents = "auto";
+        sv
+          .lenis
+          .start();
+      }
+    });
+  });
+</script>
+
+
+      <script type="module">
+            const img = new Image();
+            img.src = "https://cdn.sanity.io/images/6jpkko0l/production/fbe1425d052b5387bce27d70ae8bc74d92a3bdf1-5444x3658.jpg";
+            img.onload = () => {
+                  console.log("img loaded");
+                  updateHeroImage(img.width, img.height);
+            }
+
+            const updateHeroImage = (_imgWidth, _imgHeight) => {
+                  const mediaQuery = window.matchMedia('(max-width: 768px)');
+                  if (mediaQuery.matches) {
+                        const heroImg = document.querySelector('.mobileHeaderHero');
+                        setupOverlayDiv(heroImg);
+                  } else {
+                        const heroImg = document.querySelector('.desktopHeaderHeroImg');
+                        const newHeight = findBGImageHeight(_imgWidth, _imgHeight, heroImg);
+
+                        heroImg.style.height = `${newHeight}px`;
+                        setupOverlayDiv(heroImg);
+                  }
+            };
+            window.addEventListener('resize', () => {
+                  updateHeroImage(img.width, img.height);
+            });
+
+            function findBGImageHeight(_imgWidth, _imgHeight, heroImg) {
+                  let aspectRatio = _imgWidth / _imgHeight;
+
+                  const windowWidth = window.innerWidth;
+                  const windowHeight = window.innerHeight;
+
+                  let newHeight = Math.floor(windowWidth / aspectRatio);
+
+                  return newHeight;
+            }
+
+            function setupOverlayDiv(heroImg) {
+                  if (heroImg.querySelector('.overlayDiv')) {
+                        heroImg
+                              .querySelector('.overlayDiv')
+                              .remove();
+                  }
+                  const overlayDiv = document.createElement('div');
+                  overlayDiv
+                        .classList
+                        .add('overlayDiv');
+                  overlayDiv.style.position = 'absolute';
+                  overlayDiv.style.top = '0';
+                  overlayDiv.style.left = '0';
+                  overlayDiv.style.width = '100%';
+                  overlayDiv.style.height = '100%';
+                  overlayDiv.style.zIndex = '0'; // Ensure it's behind other content
+                  overlayDiv.style.background = 'linear-gradient(to bottom, rgba(0, 0, 0, 0), #030b22)';
+                  heroImg.appendChild(overlayDiv);
+                  heroImg.style.backgroundImage = 'url(https://cdn.sanity.io/images/6jpkko0l/production/fbe1425d052b5387bce27d70ae8bc74d92a3bdf1-5444x3658.jpg)';
+            }
+      </script>
+
+
+<div class="mobileHeaderHero mobileOnlyBlock">
+  <div class="headerTop margin0LR padding1LR">
+    <div class="headerText">
+      <div class="mediaType">FEATURED FILM</div>
+      <div class="vertGap0"></div>
+      <div></div>
+      <div class="heroTitle">Mission Blue</div>
+    </div>
+  </div>
+</div>
+
+<div class="desktopHeaderHeroImg desktopOnlyBlock"></div>
+
+<div class="desktopHeaderHero desktopOnlyBlock">
+  <div class="headerTop margin0LR padding1LR">
+    <div class="headerText">
+      <div class="mediaType">FEATURED FILM</div>
+      <div class="vertGap0"></div>
+      <div></div>
+      <div class="heroTitle">Mission Blue</div>
+    </div>
+  </div>
+</div>
+
+<div class="sevenThreeGrid margin0LR padding1LR">
+  <div class="heroDescription mobileOnlyBlock" style="position: relative;">
+  <div class="magicTextContainer">
+    <div class="magicText" style="white-space: pre-line;">
+      Legendary oceanographer and TED prize winner Dr. Sylvia Earle is on a mission to save our oceans. Mission Blue is part action-adventure, part expose of an Eco-disaster. More than 100 scientists, philanthropists and activists gather in the Galapagos Islands to help fulfill Dr. Earle&#39;s lifelong wish: build a global network of marine protected areas such as underwater national parks, to protect the natural systems that keep humans alive. As the expedition ends, the Deep Water Horizon oil well explodes. With oil gushing into the Gulf of Mexico, Sylvia and an environmental dream team race around the world trying to defend her &#39;Hope Spots&#39;.
+      <button
+    class="caret-button"
+    aria-label="Expand text"
+    aria-expanded="false"
+    >
+        <span class="caret">▼</span>
+      </button>
+    </div>
+  </div>
+
+  <script type="module">
+    import {initializeExpandCollapse} from "../../js/smartTextBox.js";
+    console.log("smartTextBox.njk");
+    document.addEventListener("DOMContentLoaded", initializeExpandCollapse);
+  </script>
+
+</div>
+  <div class="heroDescription desktopOnlyBlock" style="position: relative;">Legendary oceanographer and TED prize winner Dr. Sylvia Earle is on a mission to save our oceans. Mission Blue is part action-adventure, part expose of an Eco-disaster. More than 100 scientists, philanthropists and activists gather in the Galapagos Islands to help fulfill Dr. Earle&#39;s lifelong wish: build a global network of marine protected areas such as underwater national parks, to protect the natural systems that keep humans alive. As the expedition ends, the Deep Water Horizon oil well explodes. With oil gushing into the Gulf of Mexico, Sylvia and an environmental dream team race around the world trying to defend her &#39;Hope Spots&#39;.</div>
+  <div style="position: relative;">
+    <button onclick="window.open('https://www.netflix.com/title/70308278', '_blank');" class="ctaButton">WATCH NOW</button>
+    <div class="vSpacer0"></div>
+    
+      
+        <div class="heroMetadata">2014</div>
+      
+    
+      
+        <div class="heroMetadata">English</div>
+      
+    
+      
+        <div class="heroMetadata">United States</div>
+      
+    
+      
+        <div class="heroMetadata">96</div>
+      
+    
+      
+    
+  </div>
+</div>
+
+<div class="vSpacer2"></div>
+
+<div class="awardsTickerContainer">
+  <div class="awardsTicker">
+    
+    
+  </div>
+</div>
+
+
+
+<div class="margin0LR padding1LR" style="position: relative;">
+  <div class="serifSubtitle">WATCH THE TRAILER</div>
+</div>
+
+<div class="serifSubtitle_spaceBelow"></div>
+
+<div class="responsive-iframe margin0LR">
+  <iframe class="" src="https://www.youtube.com/embed/B1wp2MQCsfQ?si=4pI1ZUJ5NVbns8IL" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</div>
+
+<div class="vSpacer2"></div>
+
+<div class="margin0LR padding1LR">
+  <div class="serifSubtitle">
+  IMAGE GALLERY
+  </div>
+  <div class="serifSubtitle_spaceBelow"></div>
+  <div class="galleryGrid">
+    
+      <img src="https://cdn.sanity.io/images/6jpkko0l/production/fbe1425d052b5387bce27d70ae8bc74d92a3bdf1-5444x3658.jpg" alt="">
+    
+      <img src="https://cdn.sanity.io/images/6jpkko0l/production/fdd6b1fd7a582c756d1202f0fc82d05dab805a2c-4000x2250.jpg" alt="">
+    
+      <img src="https://cdn.sanity.io/images/6jpkko0l/production/47b893939f2df392c2cf7ea325c04bbc938c75d8-4416x3312.jpg" alt="">
+    
+      <img src="https://cdn.sanity.io/images/6jpkko0l/production/f53d2928f6d7fb0b2845d8da05dd440b4f382706-4096x2304.png" alt="">
+    
+  </div>
+
+  <div class="vSpacer2"></div>
+
+  <div class="serifSubtitle">
+    CREDITS
+  </div>
+
+  <div class="serifSubtitle_spaceBelow"></div>
+
+  
+      
+      
+      
+            
+                  
+            
+      
+            
+                  
+            
+      
+            
+      
+            
+      
+            
+      
+      <div class="threeSevenGrid creditsSectionCopy">
+            <div>
+                  
+                        
+                              DIRECTOR
+                        
+                  
+            </div>
+            
+            
+                  
+                        
+                  
+            
+                  
+                        
+                  
+            
+                  
+            
+                  
+            
+                  
+            
+            Robert Nixon, Fisher Stevens
+      </div>
+      
+            <hr>
+      
+
+  
+      
+      
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+      <div class="threeSevenGrid creditsSectionCopy">
+            <div>
+                  
+            </div>
+            
+            
+                  
+            
+                  
+            
+                  
+            
+                  
+            
+                  
+            
+            
+      </div>
+      
+
+  
+      
+      
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+      <div class="threeSevenGrid creditsSectionCopy">
+            <div>
+                  
+            </div>
+            
+            
+                  
+            
+                  
+            
+                  
+            
+                  
+            
+                  
+            
+            
+      </div>
+      
+
+  
+      
+      
+      
+            
+      
+            
+      
+            
+      
+            
+                  
+            
+      
+            
+                  
+            
+      
+      <div class="threeSevenGrid creditsSectionCopy">
+            <div>
+                  
+                        
+                              WRITER
+                        
+                  
+            </div>
+            
+            
+                  
+            
+                  
+            
+                  
+            
+                  
+                        
+                  
+            
+                  
+                        
+                  
+            
+            Mark Monroe, Jack Youngelson
+      </div>
+      
+            <hr>
+      
+
+  
+      
+      
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+      <div class="threeSevenGrid creditsSectionCopy">
+            <div>
+                  
+            </div>
+            
+            
+                  
+            
+                  
+            
+                  
+            
+                  
+            
+                  
+            
+            
+      </div>
+      
+
+  
+      
+      
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+      <div class="threeSevenGrid creditsSectionCopy">
+            <div>
+                  
+            </div>
+            
+            
+                  
+            
+                  
+            
+                  
+            
+                  
+            
+                  
+            
+            
+      </div>
+      
+
+  
+      
+      
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+      <div class="threeSevenGrid creditsSectionCopy">
+            <div>
+                  
+            </div>
+            
+            
+                  
+            
+                  
+            
+                  
+            
+                  
+            
+                  
+            
+            
+      </div>
+      
+
+  
+      
+      
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+      <div class="threeSevenGrid creditsSectionCopy">
+            <div>
+                  
+            </div>
+            
+            
+                  
+            
+                  
+            
+                  
+            
+                  
+            
+                  
+            
+            
+      </div>
+      
+
+  
+      
+      
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+      <div class="threeSevenGrid creditsSectionCopy">
+            <div>
+                  
+            </div>
+            
+            
+                  
+            
+                  
+            
+                  
+            
+                  
+            
+                  
+            
+            
+      </div>
+      
+
+  
+      
+      
+      
+            
+      
+            
+      
+            
+                  
+            
+      
+            
+      
+            
+      
+      <div class="threeSevenGrid creditsSectionCopy">
+            <div>
+                  
+                        
+                              EXECUTIVE PRODUCER
+                        
+                  
+            </div>
+            
+            
+                  
+            
+                  
+            
+                  
+                        
+                  
+            
+                  
+            
+                  
+            
+            Shari Sant
+      </div>
+      
+            <hr>
+      
+
+</div>
+
+
+
+
+
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+
+
+<br>
+
+
+
+
+  
+  
+  
+  
+  
+  
+    
+  
+
+  
+  
+  
+  
+  
+    
+  
+  
+    
+  
+
+  
+  
+  
+  
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+  
+  
+  
+    
+  
+    
+      
+    
+  
+    
+  
+  
+
+  
+  
+  
+  
+  
+    
+      
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+  
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+  
+  
+  
+    
+  
+    
+  
+    
+  
+    
+      
+    
+  
+  
+
+  
+  
+  
+  
+  
+    
+  
+    
+  
+    
+  
+    
+      
+    
+  
+  
+
+  
+  
+  
+  
+  
+    
+  
+    
+  
+    
+      
+    
+  
+    
+  
+  
+
+  
+  
+  
+  
+  
+    
+      
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+  
+  
+  
+    
+  
+    
+      
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+  
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+  
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      
+    
+  
+  
+
+  
+  
+  
+  
+  
+    
+      
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+  
+  
+  
+    
+  
+    
+  
+    
+      
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+  
+  
+  
+    
+  
+    
+  
+    
+  
+    
+      
+    
+  
+    
+  
+  
+
+  
+  
+  
+  
+  
+    
+  
+    
+  
+    
+  
+    
+      
+    
+  
+    
+  
+  
+
+  
+  
+  
+  
+  
+    
+  
+    
+      
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+  
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      
+    
+  
+  
+
+  
+  
+  
+  
+  
+    
+  
+    
+  
+    
+  
+    
+      
+    
+  
+    
+  
+  
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<div class="vSpacer2"></div>
+
+<div class="margin0LR padding1LR desktopOnlyBlock">
+  <div class="serifSubtitle">MORE FEATURED FILMS</div>
+</div>
+
+<div class="serifSubtitle_spaceBelow"></div>
+
+<div class="margin0LR mobileOnlyBlock">
+  
+  
+    
+    <div class="mobileOnlyBlock"></div>
+  
+</div>
+
+<div class="threeFeaturedFilmsComp margin0LR desktopOnlyBlock">
+  <div class="threeColGrid mobileOnly_Padding1LR">
+    
+      
+        
+      <div class="subFeaturedFilmComp">
+            <div>
+                  <a href="/films/chasing-coral">
+                        <img src="https://cdn.sanity.io/images/6jpkko0l/production/29e44f773d2f03dd9898f9b9582d3db2b2fc84e4-854x1274.png" alt="Chasing Coral poster">
+                  </a>
+            </div>
+            <div class="subFeaturedFilmCompBottomHalf" >
+                  <div>
+                        <div class="mediaType">
+                              2017
+                        </div>
+                        <div class="vertGap0"></div>
+                        <div class="serifSubtitle">
+                              Chasing Coral
+                        </div>
+                        <div class="vertGap0"></div>
+                        <div class="bodyCopySmaller">
+                              Divers, scientists and photographers around the world mount an epic underwater campaign to document the disappearance of coral reefs.
+                        </div>
+                        <div class="vertGap0"></div>
+                  </div>
+                  <div class="vertGap0"></div>
+                  <button class="ctaButton ">
+                        <a href="/films/chasing-coral" >
+                        LEARN MORE
+                  </a>
+                  </button>
+            </div>
+      </div>
+
+        <div class="mobileOnlyBlock"></div>
+      
+    
+      
+        
+      <div class="subFeaturedFilmComp">
+            <div>
+                  <a href="/films/the-battle-for-laikipia">
+                        <img src="https://cdn.sanity.io/images/6jpkko0l/production/9929bea75b11c6fcd23b4f0e84b6c5bd45aa5aeb-1000x1482.jpg" alt="The Battle for Laikipia poster">
+                  </a>
+            </div>
+            <div class="subFeaturedFilmCompBottomHalf" >
+                  <div>
+                        <div class="mediaType">
+                              2024
+                        </div>
+                        <div class="vertGap0"></div>
+                        <div class="serifSubtitle">
+                              The Battle for Laikipia
+                        </div>
+                        <div class="vertGap0"></div>
+                        <div class="bodyCopySmaller">
+                              Unresolved historical injustices and climate change raise the stakes in a generations-old conflict between Indigenous pastoralists and white landowners in Laikipia, Kenya, a wildlife conservation haven.
+                        </div>
+                        <div class="vertGap0"></div>
+                  </div>
+                  <div class="vertGap0"></div>
+                  <button class="ctaButton ">
+                        <a href="/films/the-battle-for-laikipia" >
+                        LEARN MORE
+                  </a>
+                  </button>
+            </div>
+      </div>
+
+        <div class="mobileOnlyBlock"></div>
+      
+    
+      
+        
+      <div class="subFeaturedFilmComp">
+            <div>
+                  <a href="/films/gaucho-gaucho">
+                        <img src="https://cdn.sanity.io/images/6jpkko0l/production/5084db8aa845d0d99ad2e2f9ef02ca288af45dcc-854x1274.png" alt="Gaucho Gaucho poster">
+                  </a>
+            </div>
+            <div class="subFeaturedFilmCompBottomHalf" >
+                  <div>
+                        <div class="mediaType">
+                              2024
+                        </div>
+                        <div class="vertGap0"></div>
+                        <div class="serifSubtitle">
+                              Gaucho Gaucho
+                        </div>
+                        <div class="vertGap0"></div>
+                        <div class="bodyCopySmaller">
+                              The documentary film GAUCHO GAUCHO introduces the world to a group of legendary gauchos (or South American cowboys) who live apart from modern society. The film weaves together tales of gauchos confronting the fragility of their existence in the face of unprecedented change.
+                        </div>
+                        <div class="vertGap0"></div>
+                  </div>
+                  <div class="vertGap0"></div>
+                  <button class="ctaButton ">
+                        <a href="/films/gaucho-gaucho" >
+                        LEARN MORE
+                  </a>
+                  </button>
+            </div>
+      </div>
+
+        <div class="mobileOnlyBlock"></div>
+      
+    
+  </div>
+</div>
+
+<div id="pageLoadingScreen"></div>
+    
+    <div class="vSpacer2"></div>
+    <div id="footer" class="footer">
+  <div id="wrapper">
+    <div class="footerChild" id="footerLeftCenter">
+      <div class="footerChild" id="footerLeftCenterTop"></div>
+      <div class="footerChild" id="footerLeftCenterBottom">
+        <div class="footerChild" id="footerLeft">
+          <img src="/assets/images/logo.svg" alt="Code Blue Logo">
+        </div>
+        <div class="footerChild" id="footerCenter">
+          <div class="smallShortSerifCopy" >Protection and restoration of our blue planet through innovative projects and strategic alliances.</div>
+          <div id="footerCenterChildBottom">
+            <div class="heroPhotoCredit">QUICK LINKS
+                <div class="vertGap1">
+                <br>
+              </div>
+              <ul>
+                <li >
+                  <a class="footerLinks" target="_blank" href="/pages/story">
+                                        About Us</a>
+                </li>
+                <li>
+                  <a class="footerLinks" target="_blank" href="/pages/impactMedia" >
+                                        Impact Media
+                                        </a>
+                </li>
+                <li>
+                  <a class="footerLinks" target="_blank" href="/pages/conservationGrantees" >
+                                        Conservation Grantees</a>
+                </li>
+              </ul>
+            </div>
+            <div></div>
+            <div class="heroPhotoCredit">CONTACT
+                            <div class="vertGap1">
+                <br>
+              </div>
+              <ul>
+                <li class="noTextWrapList">
+                  <a class="footerLinks" href="mailto:bonjour@codebluefoundation.org">
+                                        bonjour@codebluefoundation.org</a>
+                </li>
+                <li class="noTextWrapList">
+                  <div>Code Blue does not accept unsolicited proposals</div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footerChild footerFishContainer" id="footerRight">
+      <img class="footerFish" id="desktopFooterFish" src="/assets/images/fish4.png" alt="Sea Creature">
+      <div class="footerCopyright" id="footerRightCopy">Copyright 2025 Code Blue Foundation.<br>All rights reserved.</div>
+    </div>
+  </div>
+</div>
+    <div id="mobileFooter" class="footer mobileOnly_Padding1LR">
+  <div id="wrapper" class="margin0LR">
+    <div >
+      <div class="threeSevenGridMobile footerFishContainer" style="align-items: flex-end !important; justify-content: bottom !important;">
+        <img class="mobileFooterLogo" src="/assets/images/logo.svg" alt="Code Blue Logo">
+        <img class="footerFish" id="mobileFooterFish" src="/assets/images/fish4.png" alt="Sea Creature">
+      </div>
+      <div class="vSpacer1"></div>
+      <div class="smallShortSerifCopy">Protection and restoration of our blue planet through innovative projects and strategic alliances.</div>
+    </div>
+    <div class="vSpacer1"></div>
+    <div class="footerLinkTitle">QUICK LINKS
+      <div class="vertGap0"></div>
+      <ul>
+        <li>
+          <a class="footerLinks" target="_blank" href="/pages/story">About Us</a>
+        </li>
+        <li>
+          <a class="footerLinks" target="_blank" href="/pages/impactMedia" >Impact Media</a>
+        </li>
+        <li>
+          <a class="footerLinks" target="_blank" href="/pages/conservationGrantees" >Conservation Grantees</a>
+        </li>
+      </ul>
+    </div>
+    <div class="vertGap2"></div>
+    <div class="footerLinkTitle">CONTACT
+      <div class="vertGap0"></div>
+      <ul>
+        <li>
+          <a class="footerLinks" href="mailto:bonjour@codebluefoundation.org">
+                                        bonjour@codebluefoundation.org</a>
+        </li>
+        <li>
+        <li class="noTextWrapList">
+          <div>Code Blue does not accept unsolicited proposals</div>
+        </li>
+      </li>
+    </ul>
+  </div>
+  <div class="vSpacer1"></div>
+  <div class="footerCopyright" class="textAlignLeft">Copyright 2025 Code Blue Foundation. All rights reserved.</div>
+  <div class="vSpacer0"></div>
+</div>
+</div>
+
+    <div id="mobileMenu">
+  <div class="mobileMenuChild" id="mobileMenuChild0">
+    <ul>
+      <li>
+        <a class="mobileMenuNavLinks" href="/pages/story">About Us</a>
+      </li>
+      <li>
+        <a class="mobileMenuNavLinks" href="/pages/impactMedia" >Impact Media</a>
+      </li>
+      <li>
+        <a class="mobileMenuNavLinks" href="/pages/conservationGrantees" >Conservation Grantees</a>
+      </li>
+    </ul>
+  </div>
+  <div class="footerLinkTitle mobileMenuChild" id="mobileMenuChild1">
+    <div class="vertGap0"></div>
+    <ul>
+                  CONTACT
+                  <li>
+        <a class="footerLinks" href="mailto:bonjour@codebluefoundation.org">
+                                        bonjour@codebluefoundation.org</a>
+      </li>
+      <li>
+        <li class="noTextWrapList">
+          <div>Code Blue does not accept unsolicited proposals</div>
+        </li>
+      </li>
+    </ul>
+    <div class="vertGap1"></div>
+  </div>
+</div>
+  </body>
+</html>
