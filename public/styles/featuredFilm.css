@@ -1,0 +1,61 @@
+.centered .background {
+  /* overflow: hidden; */
+  width: 100%;
+  height: 100%;
+  border-radius: 1.5rem;
+}
+.centered .background img {
+  width: 100%;
+  object-fit: cover; /* This will ensure the image fills the space and crops if needed */
+}
+.centered .background video {
+  width: 100%;
+  object-fit: cover; /* This will ensure the image fills the space and crops if needed */
+}
+
+#featuredFilmForeground {
+  position: absolute;
+  color: white;
+  /* background-color: red; */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  height: 70%;
+  bottom: 0;
+  max-width: 30%;
+  min-width: 10%;
+  margin-bottom: 2%;
+}
+
+#featuredFilmInfo {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.subFeaturedFilmComp a {
+  text-decoration: none;
+}
+
+.subFeaturedFilmComp a::before,
+.subFeaturedFilmComp a::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  left: 0;
+}
+.subFeaturedFilmComp a::before {
+  display: none;
+}
+.subFeaturedFilmComp a::after {
+  display: none;
+}
+
+.subFeaturedFilmComp a:hover::before {
+  transform-origin: 0% 50%;
+  transform: scaleX(1);
+}
+.subFeaturedFilmComp a:hover::after {
+  transform: translate3d(0, 0, 0);
+}

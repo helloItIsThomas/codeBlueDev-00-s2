@@ -1,0 +1,13 @@
+.shariBioLeft {
+  z-index: 1;
+  display: flex;
+  top: 0;
+  flex-direction: column;
+  margin: 0rem;
+  margin-top: 0;
+}
+
+.shariBioLeft img {
+  padding-left: 0;
+  border-radius: 20px;
+}
