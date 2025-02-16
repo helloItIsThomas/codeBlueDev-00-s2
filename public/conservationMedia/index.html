@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+
+<script src="/js/gsap/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollToPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/split-type"></script>
+<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+
+<link rel="icon" href="/assets/images/favicon.ico" type="image/x-icon"/>
+
+<script type="module" src="/js/setup.js"></script>
+
+
+<script type="module" src="/js/mobileDetection.js"></script>
+<script type="module" src="/js/utils.js"></script>
+<script type="module">
+  import {toggleMobileMenu} from "/js/nav.js";
+  toggleMobileMenu();
+</script>
+
+<html lang="en">
+  <head>
+    <script type="module" src="/js/globalVars.js"></script>
+
+    <meta charset="UTF-8"/>
+    <meta property=”og:url content=”https://github.com/timClicks/glsl-shader-intro”/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <link rel="stylesheet" href="https://unpkg.com/lenis@1.1.18/dist/lenis.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/base.css"/>
+    <link rel="stylesheet" href="/styles/mobile.css"/>
+    <link rel="stylesheet" href="/styles/nav.css"/>
+    <link rel="stylesheet" href="/styles/fonts.css"/>
+    <link rel="stylesheet" href="/styles/media.css"/>
+    <link rel="stylesheet" href="/styles/footer.css"/>
+    <link rel="stylesheet" href="/styles/globals.css"/>
+    <link rel="stylesheet" href="/styles/featuredPartnership.css"/>
+    <link rel="stylesheet" href="/styles/buttons.css"/>
+    <link rel="stylesheet" href="/styles/featuredFilm.css"/>
+    <link rel="stylesheet" href="/styles/purpose.css"/>
+    <link rel="stylesheet" href="/styles/splash.css"/>
+    <link rel="stylesheet" href="/styles/mission.css"/>
+    <link rel="stylesheet" href="/styles/grids.css"/>
+    <link rel="stylesheet" href="/styles/textFX.css"/>
+    <link rel="stylesheet" href="/styles/subFeaturedFilm.css"/>
+    <link rel="stylesheet" href="/styles/baseGrid.css"/>
+    <link rel="stylesheet" href="/styles/conservationGrantees.css"/>
+    <link rel="stylesheet" href="/styles/story.css"/>
+    <link rel="stylesheet" href="/styles/header.css"/>
+    <link rel="stylesheet" href="/styles/slidingTextbox.css"/>
+    <title id="page-title">Hello from Conservation Media</title>
+  </head>
+  <body>
+    <div class="desktopOnlyBlock">
+      <div class="navBar margin0LR">
+      <div class="navLogo">
+            <a href="/index.html">
+                  <img src="/assets/images/logo.svg" alt="Code Blue">
+            </a>
+      </div>
+      <div class="navLinks">
+            <div class="navLink">
+                  <a href="/pages/impactMedia" >
+                        <span class="navTitle">IMPACT MEDIA</span>
+                  </a>
+            </div>
+            <div class="navLink">
+                  <a href="/pages/conservationGrantees" >
+                        <span class="navTitle">CONSERVATION GRANTEES</span>
+                  </a>
+            </div>
+            <div class="navLink">
+                  <a href="/pages/story" >
+                        <span class="navTitle">ABOUT</span>
+                  </a>
+            </div>
+      </div>
+</div>
+    </div>
+    <div class="mobileOnlyBlock">
+      <div class="navBar margin0LR">
+      <div id="hamburgerMenu">
+            <img id="burgerIcon" src="/assets/icons/hamburger.svg" alt="Menu"></img>
+            <img id="burgerWavyIcon" src="/assets/icons/burger-wavy.svg" alt="Menu"></img>
+      </div>
+      <div class="navLogo">
+            <a href="/index.html">
+                  <img src="/assets/images/logo.svg" alt="Code Blue">
+            </a>
+      </div>
+</div>
+    </div>
+    
+    <div class="desktopOnlyBlock" id="cursorCanvas"></div>
+    
+Hello from Conservation Media
+    
+    <div class="vSpacer2"></div>
+    <div id="footer" class="footer">
+  <div id="wrapper">
+    <div class="footerChild" id="footerLeftCenter">
+      <div class="footerChild" id="footerLeftCenterTop"></div>
+      <div class="footerChild" id="footerLeftCenterBottom">
+        <div class="footerChild" id="footerLeft">
+          <img src="/assets/images/logo.svg" alt="Code Blue Logo">
+        </div>
+        <div class="footerChild" id="footerCenter">
+          <div class="smallShortSerifCopy" >Protection and restoration of our blue planet through innovative projects and strategic alliances.</div>
+          <div id="footerCenterChildBottom">
+            <div class="heroPhotoCredit">QUICK LINKS
+                <div class="vertGap1">
+                <br>
+              </div>
+              <ul>
+                <li >
+                  <a class="footerLinks" target="_blank" href="/pages/story">
+                                        About Us</a>
+                </li>
+                <li>
+                  <a class="footerLinks" target="_blank" href="/pages/impactMedia" >
+                                        Impact Media
+                                        </a>
+                </li>
+                <li>
+                  <a class="footerLinks" target="_blank" href="/pages/conservationGrantees" >
+                                        Conservation Grantees</a>
+                </li>
+              </ul>
+            </div>
+            <div></div>
+            <div class="heroPhotoCredit">CONTACT
+                            <div class="vertGap1">
+                <br>
+              </div>
+              <ul>
+                <li class="noTextWrapList">
+                  <a class="footerLinks" href="mailto:bonjour@codebluefoundation.org">
+                                        bonjour@codebluefoundation.org</a>
+                </li>
+                <li class="noTextWrapList">
+                  <div>Code Blue does not accept unsolicited proposals</div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footerChild footerFishContainer" id="footerRight">
+      <img class="footerFish" id="desktopFooterFish" src="/assets/images/fish4.png" alt="Sea Creature">
+      <div class="footerCopyright" id="footerRightCopy">Copyright 2025 Code Blue Foundation.<br>All rights reserved.</div>
+    </div>
+  </div>
+</div>
+    <div id="mobileFooter" class="footer mobileOnly_Padding1LR">
+  <div id="wrapper" class="margin0LR">
+    <div >
+      <div class="threeSevenGridMobile footerFishContainer" style="align-items: flex-end !important; justify-content: bottom !important;">
+        <img class="mobileFooterLogo" src="/assets/images/logo.svg" alt="Code Blue Logo">
+        <img class="footerFish" id="mobileFooterFish" src="/assets/images/fish4.png" alt="Sea Creature">
+      </div>
+      <div class="vSpacer1"></div>
+      <div class="smallShortSerifCopy">Protection and restoration of our blue planet through innovative projects and strategic alliances.</div>
+    </div>
+    <div class="vSpacer1"></div>
+    <div class="footerLinkTitle">QUICK LINKS
+      <div class="vertGap0"></div>
+      <ul>
+        <li>
+          <a class="footerLinks" target="_blank" href="/pages/story">About Us</a>
+        </li>
+        <li>
+          <a class="footerLinks" target="_blank" href="/pages/impactMedia" >Impact Media</a>
+        </li>
+        <li>
+          <a class="footerLinks" target="_blank" href="/pages/conservationGrantees" >Conservation Grantees</a>
+        </li>
+      </ul>
+    </div>
+    <div class="vertGap2"></div>
+    <div class="footerLinkTitle">CONTACT
+      <div class="vertGap0"></div>
+      <ul>
+        <li>
+          <a class="footerLinks" href="mailto:bonjour@codebluefoundation.org">
+                                        bonjour@codebluefoundation.org</a>
+        </li>
+        <li>
+        <li class="noTextWrapList">
+          <div>Code Blue does not accept unsolicited proposals</div>
+        </li>
+      </li>
+    </ul>
+  </div>
+  <div class="vSpacer1"></div>
+  <div class="footerCopyright" class="textAlignLeft">Copyright 2025 Code Blue Foundation. All rights reserved.</div>
+  <div class="vSpacer0"></div>
+</div>
+</div>
+    <div id="pageLoadingScreen">
+      <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.68/build/spline-viewer.js"></script>
+      <div class="pageLoadingScreenContent">
+            <div class="spinCTASplash navTitle">
+                  <div id="percentLoaded" class="monoSubtitle"></div>
+                  <div>
+                        <div id="upArrow">
+                              <svg width="15" height="9" viewBox="0 0 15 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1 7.5L7.5 1L14 7.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                              </svg>
+                        </div>
+                        <div class="spinningText">Spin</div>
+                  </div>
+            </div>
+            <spline-viewer class="splineViewer" loading="eager" url="https://prod.spline.design/odoegjhObaZER2iN/scene.splinecode"></spline-viewer>
+      </div>
+
+      <script>
+            const mySplineViewer = document.querySelector('.splineViewer');
+            mySplineViewer.addEventListener('load-complete', (e) => {
+                  console.log("load-complete");
+                  gsap.to(mySplineViewer, {
+                        opacity: 1,
+                        duration: 1,
+                        ease: "power2.inOut"
+                  });
+            });
+      </script>
+</div>
+
+    <div id="mobileMenu">
+  <div class="mobileMenuChild" id="mobileMenuChild0">
+    <ul>
+      <li>
+        <a class="mobileMenuNavLinks" href="/pages/story">About Us</a>
+      </li>
+      <li>
+        <a class="mobileMenuNavLinks" href="/pages/impactMedia" >Impact Media</a>
+      </li>
+      <li>
+        <a class="mobileMenuNavLinks" href="/pages/conservationGrantees" >Conservation Grantees</a>
+      </li>
+    </ul>
+  </div>
+  <div class="footerLinkTitle mobileMenuChild" id="mobileMenuChild1">
+    <div class="vertGap0"></div>
+    <ul>
+                  CONTACT
+                  <li>
+        <a class="footerLinks" href="mailto:bonjour@codebluefoundation.org">
+                                        bonjour@codebluefoundation.org</a>
+      </li>
+      <li>
+        <li class="noTextWrapList">
+          <div>Code Blue does not accept unsolicited proposals</div>
+        </li>
+      </li>
+    </ul>
+    <div class="vertGap1"></div>
+  </div>
+</div>
+  </body>
+</html>

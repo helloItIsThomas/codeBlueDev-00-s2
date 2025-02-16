@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+
+<script src="/js/gsap/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollToPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/split-type"></script>
+<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+
+<link rel="icon" href="/assets/images/favicon.ico" type="image/x-icon"/>
+
+<script type="module" src="/js/setup.js"></script>
+
+
+<script type="module" src="/js/mobileDetection.js"></script>
+<script type="module" src="/js/utils.js"></script>
+<script type="module">
+  import {toggleMobileMenu} from "/js/nav.js";
+  toggleMobileMenu();
+</script>
+
+<html lang="en">
+  <head>
+    <script type="module" src="/js/globalVars.js"></script>
+
+    <meta charset="UTF-8"/>
+    <meta property=”og:url content=”https://github.com/timClicks/glsl-shader-intro”/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <link rel="stylesheet" href="https://unpkg.com/lenis@1.1.18/dist/lenis.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/base.css"/>
+    <link rel="stylesheet" href="/styles/mobile.css"/>
+    <link rel="stylesheet" href="/styles/nav.css"/>
+    <link rel="stylesheet" href="/styles/fonts.css"/>
+    <link rel="stylesheet" href="/styles/media.css"/>
+    <link rel="stylesheet" href="/styles/footer.css"/>
+    <link rel="stylesheet" href="/styles/globals.css"/>
+    <link rel="stylesheet" href="/styles/featuredPartnership.css"/>
+    <link rel="stylesheet" href="/styles/buttons.css"/>
+    <link rel="stylesheet" href="/styles/featuredFilm.css"/>
+    <link rel="stylesheet" href="/styles/purpose.css"/>
+    <link rel="stylesheet" href="/styles/splash.css"/>
+    <link rel="stylesheet" href="/styles/mission.css"/>
+    <link rel="stylesheet" href="/styles/grids.css"/>
+    <link rel="stylesheet" href="/styles/textFX.css"/>
+    <link rel="stylesheet" href="/styles/subFeaturedFilm.css"/>
+    <link rel="stylesheet" href="/styles/baseGrid.css"/>
+    <link rel="stylesheet" href="/styles/conservationGrantees.css"/>
+    <link rel="stylesheet" href="/styles/story.css"/>
+    <link rel="stylesheet" href="/styles/header.css"/>
+    <link rel="stylesheet" href="/styles/slidingTextbox.css"/>
+    <title id="page-title">Conservation Grantees</title>
+  </head>
+  <body>
+    <div class="desktopOnlyBlock">
+      <div class="navBar margin0LR">
+      <div class="navLogo">
+            <a href="/index.html">
+                  <img src="/assets/images/logo.svg" alt="Code Blue">
+            </a>
+      </div>
+      <div class="navLinks">
+            <div class="navLink">
+                  <a href="/pages/impactMedia" >
+                        <span class="navTitle">IMPACT MEDIA</span>
+                  </a>
+            </div>
+            <div class="navLink">
+                  <a href="/pages/conservationGrantees" >
+                        <span class="navTitle">CONSERVATION GRANTEES</span>
+                  </a>
+            </div>
+            <div class="navLink">
+                  <a href="/pages/story" >
+                        <span class="navTitle">ABOUT</span>
+                  </a>
+            </div>
+      </div>
+</div>
+    </div>
+    <div class="mobileOnlyBlock">
+      <div class="navBar margin0LR">
+      <div id="hamburgerMenu">
+            <img id="burgerIcon" src="/assets/icons/hamburger.svg" alt="Menu"></img>
+            <img id="burgerWavyIcon" src="/assets/icons/burger-wavy.svg" alt="Menu"></img>
+      </div>
+      <div class="navLogo">
+            <a href="/index.html">
+                  <img src="/assets/images/logo.svg" alt="Code Blue">
+            </a>
+      </div>
+</div>
+    </div>
+    
+    <div class="desktopOnlyBlock" id="cursorCanvas"></div>
+    
+
+
+<script type="module">
+      import {styleThisPageNavLink} from "../../js/nav.js";
+      styleThisPageNavLink(document.querySelector(".navLinks a[href='/pages/conservationGrantees'] span"));
+</script>
+<script type="module">
+      import {sv} from "/js/cursor/variables.js";
+      document.addEventListener("DOMContentLoaded", async () => {
+            const pageLoadingScreen = document.getElementById("pageLoadingScreen");
+
+            window.scrollTo({
+                  top: 0, // Replace with your desired vertical scroll position
+                  behavior: "instant"
+            });
+            pageLoadingScreen.style.display = "block";
+            //document.body.style.overflow = "hidden";
+            sv
+                  .lenis
+                  .stop();
+            window.scrollTo({
+                  top: 0, // Replace with your desired vertical scroll position
+                  behavior: "instant"
+            });
+
+            gsap.to(pageLoadingScreen, {
+                  opacity: 0,
+                  duration: 0.5,
+                  ease: "power3.out",
+                  delay: 2,
+                  onComplete: () => {
+                        pageLoadingScreen.style.display = "none";
+                        document.body.style.overflow = "auto";
+                        sv
+                              .lenis
+                              .start();
+                  }
+            });
+      });
+</script>
+
+
+      <script type="module">
+            const img = new Image();
+            img.src = "https://cdn.sanity.io/images/6jpkko0l/production/fdcf5de2125124ec18a2e0b1db7629c7145d5f59-2880x1700.png";
+            img.onload = () => {
+                  console.log("img loaded");
+                  updateHeroImage(img.width, img.height);
+            }
+
+            const updateHeroImage = (_imgWidth, _imgHeight) => {
+                  const mediaQuery = window.matchMedia('(max-width: 768px)');
+                  if (mediaQuery.matches) {
+                        const heroImg = document.querySelector('.mobileHeaderHero');
+                        setupOverlayDiv(heroImg);
+                  } else {
+                        const heroImg = document.querySelector('.desktopHeaderHeroImg');
+                        const newHeight = findBGImageHeight(_imgWidth, _imgHeight, heroImg);
+
+                        heroImg.style.height = `${newHeight}px`;
+                        setupOverlayDiv(heroImg);
+                  }
+            };
+            window.addEventListener('resize', () => {
+                  updateHeroImage(img.width, img.height);
+            });
+
+            function findBGImageHeight(_imgWidth, _imgHeight, heroImg) {
+                  let aspectRatio = _imgWidth / _imgHeight;
+
+                  const windowWidth = window.innerWidth;
+                  const windowHeight = window.innerHeight;
+
+                  let newHeight = Math.floor(windowWidth / aspectRatio);
+
+                  return newHeight;
+            }
+
+            function setupOverlayDiv(heroImg) {
+                  if (heroImg.querySelector('.overlayDiv')) {
+                        heroImg
+                              .querySelector('.overlayDiv')
+                              .remove();
+                  }
+                  const overlayDiv = document.createElement('div');
+                  overlayDiv
+                        .classList
+                        .add('overlayDiv');
+                  overlayDiv.style.position = 'absolute';
+                  overlayDiv.style.top = '0';
+                  overlayDiv.style.left = '0';
+                  overlayDiv.style.width = '100%';
+                  overlayDiv.style.height = '100%';
+                  overlayDiv.style.zIndex = '0'; // Ensure it's behind other content
+                  overlayDiv.style.background = 'linear-gradient(to bottom, rgba(0, 0, 0, 0), #030b22)';
+                  heroImg.appendChild(overlayDiv);
+                  heroImg.style.backgroundImage = 'url(https://cdn.sanity.io/images/6jpkko0l/production/fdcf5de2125124ec18a2e0b1db7629c7145d5f59-2880x1700.png)';
+            }
+      </script>
+
+
+  <div class="mobileHeaderHero mobileOnlyBlock">
+    <div class="headerTop margin0LR padding1LR">
+      <div class="headerText">
+        <div>
+          
+          <div class="heroTitle">Conservation Grantees</div>
+          
+            <div class="vSpacer0"></div>
+            <div class="heroDescription">Supporting impactful organizations that champion conservation and restoration of critical planetary ecosystems.</div>
+          
+          
+            <div class="vertGap1"></div>
+            <div class="heroPhotoCredit">PHOTO: MATT DRAPER</div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="desktopHeaderHeroImg desktopOnlyBlock"></div>
+  
+  <div class="desktopHeaderHero desktopOnlyBlock margin0LR">
+    <div class="headerTop margin1LR">
+      <div class="headerText">
+        <div class="twoColGrid">
+          <div>
+            
+            <div class="heroTitle">Conservation Grantees</div>
+            
+              <div class="vSpacer0"></div>
+              <div class="heroDescription">Supporting impactful organizations that champion conservation and restoration of critical planetary ecosystems.</div>
+            
+          </div>
+        </div>
+        
+          <div class="vertGap1"></div>
+          <div class="heroPhotoCredit">PHOTO: MATT DRAPER</div>
+        
+      </div>
+    </div>
+  </div>
+
+
+<div class="vSpacer1"></div><div class="margin0LR">
+            <div class="margin1LR">
+                  
+                  <div class=""></div>
+                  <hr>
+                  <div class="threeSevenGrid">
+                        <div class="granteeLeft">
+                              <img style="mix-blend-mode: screen;" src="https://cdn.sanity.io/images/6jpkko0l/production/38770801740dc13e225a7a07ab848ef6b2562102-550x300.png"  class="grantee_logo">
+                        </div>
+                        <div>
+                              <div class="granteeRight">
+                                    <div class="granteeRightTextContainer">
+                                          <div class="bodyCopyBigger mobileOnlyBlock">
+                                                
+  <div class="magicTextContainer">
+    <div class="magicText" style="white-space: pre-line;">
+      Mission Blue is a global initiative of the Sylvia Earle Alliance, a 501c3 organization, which was formed in response to a wish Dr. Earle made upon winning the 2009 TED Prize. She implored humanity, “to use all means at your disposal — films, expeditions, the web, new submarines — to create a campaign to ignite public support for a global network of marine protected areas; Hope Spots large enough to save and restore the blue heart of the planet.” Missionblue.org is an ocean community hub that embodies Sylvia’s wish to elevate public awareness about marine threats, and inspire support for impactful organizations, projects and scientific expeditions. Decades of overfishing, pollution and climate change have pushed the ocean to a breaking point—and threatened the very future of humanity.
+
+With over 165 Hope Spots around the world and 200+ partners in the Mission Blue Alliance, Mission Blue’s purpose to defend and explore the ocean is underway. Together, we are committed to inspiring a sea change in awareness and support for marine protected areas spanning ocean depths and sunlit reefs, from the high seas to the coastal mangroves that protect our cities.
+      <button
+    class="caret-button"
+    aria-label="Expand text"
+    aria-expanded="false"
+    >
+        <span class="caret">▼</span>
+      </button>
+    </div>
+  </div>
+
+  <script type="module">
+    import {initializeExpandCollapse} from "../../js/smartTextBox.js";
+    console.log("smartTextBox.njk");
+    document.addEventListener("DOMContentLoaded", initializeExpandCollapse);
+  </script>
+
+
+                                          </div>
+                                          <div class="bodyCopyBigger desktopOnlyBlock h1_0">Mission Blue is a global initiative of the Sylvia Earle Alliance, a 501c3 organization, which was formed in response to a wish Dr. Earle made upon winning the 2009 TED Prize. She implored humanity, “to use all means at your disposal — films, expeditions, the web, new submarines — to create a campaign to ignite public support for a global network of marine protected areas; Hope Spots large enough to save and restore the blue heart of the planet.” Missionblue.org is an ocean community hub that embodies Sylvia’s wish to elevate public awareness about marine threats, and inspire support for impactful organizations, projects and scientific expeditions. Decades of overfishing, pollution and climate change have pushed the ocean to a breaking point—and threatened the very future of humanity.
+
+With over 165 Hope Spots around the world and 200+ partners in the Mission Blue Alliance, Mission Blue’s purpose to defend and explore the ocean is underway. Together, we are committed to inspiring a sea change in awareness and support for marine protected areas spanning ocean depths and sunlit reefs, from the high seas to the coastal mangroves that protect our cities.</div>
+                                    </div>
+                                    <div class="vertGap0"></div>
+
+                                    <button onclick="window.open('https://missionblue.org/', '_blank')" class="ctaButton">VISIT MISSION BLUE</button>
+                              </div>
+                        </div>
+                  </div>
+            </div>
+      </div><div class="margin0LR">
+            <div class="margin1LR">
+                  
+                  <div class=""></div>
+                  <hr>
+                  <div class="threeSevenGrid">
+                        <div class="granteeLeft">
+                              <img style="mix-blend-mode: screen;" src="https://cdn.sanity.io/images/6jpkko0l/production/fd7daac6938c67598e5303960ba10c76fa209bea-550x300.png"  class="grantee_logo">
+                        </div>
+                        <div>
+                              <div class="granteeRight">
+                                    <div class="granteeRightTextContainer">
+                                          <div class="bodyCopyBigger mobileOnlyBlock">
+                                                
+  <div class="magicTextContainer">
+    <div class="magicText" style="white-space: pre-line;">
+      Media Impact Funders is a membership organization that advances the work of a broad range of funders committed to effective implementation and financial support of media that is in the public interest. As a member, Code Blue collaborates with partners to develop best practices that leverage the power of storytelling to advance environmental conservation.
+      <button
+    class="caret-button"
+    aria-label="Expand text"
+    aria-expanded="false"
+    >
+        <span class="caret">▼</span>
+      </button>
+    </div>
+  </div>
+
+  <script type="module">
+    import {initializeExpandCollapse} from "../../js/smartTextBox.js";
+    console.log("smartTextBox.njk");
+    document.addEventListener("DOMContentLoaded", initializeExpandCollapse);
+  </script>
+
+
+                                          </div>
+                                          <div class="bodyCopyBigger desktopOnlyBlock h1_0">Media Impact Funders is a membership organization that advances the work of a broad range of funders committed to effective implementation and financial support of media that is in the public interest. As a member, Code Blue collaborates with partners to develop best practices that leverage the power of storytelling to advance environmental conservation.</div>
+                                    </div>
+                                    <div class="vertGap0"></div>
+
+                                    <button onclick="window.open('https://mediaimpactfunders.org/', '_blank')" class="ctaButton">VISIT MEDIA IMPACT FUNDERS</button>
+                              </div>
+                        </div>
+                  </div>
+            </div>
+      </div><div class="margin0LR">
+            <div class="margin1LR">
+                  
+                  <div class=""></div>
+                  <hr>
+                  <div class="threeSevenGrid">
+                        <div class="granteeLeft">
+                              <img style="mix-blend-mode: screen;" src="https://cdn.sanity.io/images/6jpkko0l/production/d20843fee7a8d09ffda2dfec2f4a243cff9b7e85-550x300.png"  class="grantee_logo">
+                        </div>
+                        <div>
+                              <div class="granteeRight">
+                                    <div class="granteeRightTextContainer">
+                                          <div class="bodyCopyBigger mobileOnlyBlock">
+                                                
+  <div class="magicTextContainer">
+    <div class="magicText" style="white-space: pre-line;">
+      Co-founded in 2005 by acting legend Robert Redford and his late son James Redford, The Redford Center harnesses the power of film, video and new media to engage people through inspiring stories that galvanize environmental action. Drawing on the family’s multi-generational expertise in filmmaking and activism, and championed by Jill Tidman, the Redford Center produces and funds impact-focused productions that share stories of inspiring individuals battling to protect and restore our planet.
+
+Currently in production and supported by Code Blue is Surfing Saves. The film uses surfing as a metaphor for life and rebirth. It tells stories of how surfing can save people, and how those individuals go on to rally communities around the world and protect our blue planet.
+      <button
+    class="caret-button"
+    aria-label="Expand text"
+    aria-expanded="false"
+    >
+        <span class="caret">▼</span>
+      </button>
+    </div>
+  </div>
+
+  <script type="module">
+    import {initializeExpandCollapse} from "../../js/smartTextBox.js";
+    console.log("smartTextBox.njk");
+    document.addEventListener("DOMContentLoaded", initializeExpandCollapse);
+  </script>
+
+
+                                          </div>
+                                          <div class="bodyCopyBigger desktopOnlyBlock h1_0">Co-founded in 2005 by acting legend Robert Redford and his late son James Redford, The Redford Center harnesses the power of film, video and new media to engage people through inspiring stories that galvanize environmental action. Drawing on the family’s multi-generational expertise in filmmaking and activism, and championed by Jill Tidman, the Redford Center produces and funds impact-focused productions that share stories of inspiring individuals battling to protect and restore our planet.
+
+Currently in production and supported by Code Blue is Surfing Saves. The film uses surfing as a metaphor for life and rebirth. It tells stories of how surfing can save people, and how those individuals go on to rally communities around the world and protect our blue planet.</div>
+                                    </div>
+                                    <div class="vertGap0"></div>
+
+                                    <button onclick="window.open('https://www.redfordcenter.org/films/surfing-saves/', '_blank')" class="ctaButton">VISIT THE REDFORD CENTER</button>
+                              </div>
+                        </div>
+                  </div>
+            </div>
+      </div><div class="margin0LR">
+            <div class="margin1LR">
+                  
+                  <div class=""></div>
+                  <hr>
+                  <div class="threeSevenGrid">
+                        <div class="granteeLeft">
+                              <img style="mix-blend-mode: screen;" src="https://cdn.sanity.io/images/6jpkko0l/production/0da5e0c60b63977abc7f3881db1b39a26c6939b8-550x300.png"  class="grantee_logo">
+                        </div>
+                        <div>
+                              <div class="granteeRight">
+                                    <div class="granteeRightTextContainer">
+                                          <div class="bodyCopyBigger mobileOnlyBlock">
+                                                
+  <div class="magicTextContainer">
+    <div class="magicText" style="white-space: pre-line;">
+      For over 100 years, The Explorers Club has been the de facto club for explorers around the world. With legendary members including Teddy Roosevelt, Edmund Hillary and Sylvia Earle, this international organization is dedicated to the advancement of field exploration and scientific inquiry. The Club&#39;s members have been responsible for carrying the Explorers club flag on an illustrious series of famous firsts: first to the North Pole, first to the South Pole, first to the summit of Mount Everest, first to the deepest point in the ocean, first to the surface of the moon. Code Blue Supports annual World Ocean Week and Climate Week events (every June) &amp; the club’s Awards.
+      <button
+    class="caret-button"
+    aria-label="Expand text"
+    aria-expanded="false"
+    >
+        <span class="caret">▼</span>
+      </button>
+    </div>
+  </div>
+
+  <script type="module">
+    import {initializeExpandCollapse} from "../../js/smartTextBox.js";
+    console.log("smartTextBox.njk");
+    document.addEventListener("DOMContentLoaded", initializeExpandCollapse);
+  </script>
+
+
+                                          </div>
+                                          <div class="bodyCopyBigger desktopOnlyBlock h1_0">For over 100 years, The Explorers Club has been the de facto club for explorers around the world. With legendary members including Teddy Roosevelt, Edmund Hillary and Sylvia Earle, this international organization is dedicated to the advancement of field exploration and scientific inquiry. The Club&#39;s members have been responsible for carrying the Explorers club flag on an illustrious series of famous firsts: first to the North Pole, first to the South Pole, first to the summit of Mount Everest, first to the deepest point in the ocean, first to the surface of the moon. Code Blue Supports annual World Ocean Week and Climate Week events (every June) &amp; the club’s Awards.</div>
+                                    </div>
+                                    <div class="vertGap0"></div>
+
+                                    <button onclick="window.open('https://www.explorers.org/', '_blank')" class="ctaButton">VISIT THE EXPLORERS CLUB</button>
+                              </div>
+                        </div>
+                  </div>
+            </div>
+      </div><div class="margin0LR">
+            <div class="margin1LR">
+                  
+                  <div class=""></div>
+                  <hr>
+                  <div class="threeSevenGrid">
+                        <div class="granteeLeft">
+                              <img style="mix-blend-mode: screen;" src="https://cdn.sanity.io/images/6jpkko0l/production/3313601fe2b9b9cda5788b5b572125787a2ea652-550x300.png"  class="grantee_logo">
+                        </div>
+                        <div>
+                              <div class="granteeRight">
+                                    <div class="granteeRightTextContainer">
+                                          <div class="bodyCopyBigger mobileOnlyBlock">
+                                                
+  <div class="magicTextContainer">
+    <div class="magicText" style="white-space: pre-line;">
+      For 50 years, World Wildlife Fund (WWF) has been protecting the future of nature. The world’s leading conservation organization, WWF works in 100 countries and is supported by 5 million people. Code Blue Foundation is a proud supporter of WWF’s unique way of working that merges global reach and scientific insight. It galvanizes action at every level, and ensures the enactment of innovative solutions that benefit people and nature alike.
+      <button
+    class="caret-button"
+    aria-label="Expand text"
+    aria-expanded="false"
+    >
+        <span class="caret">▼</span>
+      </button>
+    </div>
+  </div>
+
+  <script type="module">
+    import {initializeExpandCollapse} from "../../js/smartTextBox.js";
+    console.log("smartTextBox.njk");
+    document.addEventListener("DOMContentLoaded", initializeExpandCollapse);
+  </script>
+
+
+                                          </div>
+                                          <div class="bodyCopyBigger desktopOnlyBlock h1_0">For 50 years, World Wildlife Fund (WWF) has been protecting the future of nature. The world’s leading conservation organization, WWF works in 100 countries and is supported by 5 million people. Code Blue Foundation is a proud supporter of WWF’s unique way of working that merges global reach and scientific insight. It galvanizes action at every level, and ensures the enactment of innovative solutions that benefit people and nature alike.</div>
+                                    </div>
+                                    <div class="vertGap0"></div>
+
+                                    <button onclick="window.open('https://www.worldwildlife.org/', '_blank')" class="ctaButton">VISIT WORLD WILDLIFE FUND</button>
+                              </div>
+                        </div>
+                  </div>
+            </div>
+      </div><div class="margin0LR">
+            <div class="margin1LR">
+                  
+                  <div class=""></div>
+                  <hr>
+                  <div class="threeSevenGrid">
+                        <div class="granteeLeft">
+                              <img style="mix-blend-mode: screen;" src="https://cdn.sanity.io/images/6jpkko0l/production/aaa13a6f1877ca0c01d1a53b17f87ebbf5db230f-550x300.png"  class="grantee_logo">
+                        </div>
+                        <div>
+                              <div class="granteeRight">
+                                    <div class="granteeRightTextContainer">
+                                          <div class="bodyCopyBigger mobileOnlyBlock">
+                                                
+  <div class="magicTextContainer">
+    <div class="magicText" style="white-space: pre-line;">
+      Covering 71% of the Earth’s surface, the ocean is vast and unforgiving. But in order to uncover the knowledge needed to save our blue planet, we must go where humans have never dared and probe unexplored ocean depths. With this goal, WHOI scientists and engineers explore the earth’s final frontier, hoping to find solutions to our planet’s greatest challenges.
+
+WHOI’s mantra states, “If there is no tool to do what needs to be done, we invent one; if there is no experimental method, we devise it. Because, now more than ever, the ocean matters to us all.” Code Blue is supporting WHOI’s newly created Room 71 Communications, headed up by Chasing Coral star Richard Veevers.
+      <button
+    class="caret-button"
+    aria-label="Expand text"
+    aria-expanded="false"
+    >
+        <span class="caret">▼</span>
+      </button>
+    </div>
+  </div>
+
+  <script type="module">
+    import {initializeExpandCollapse} from "../../js/smartTextBox.js";
+    console.log("smartTextBox.njk");
+    document.addEventListener("DOMContentLoaded", initializeExpandCollapse);
+  </script>
+
+
+                                          </div>
+                                          <div class="bodyCopyBigger desktopOnlyBlock h1_0">Covering 71% of the Earth’s surface, the ocean is vast and unforgiving. But in order to uncover the knowledge needed to save our blue planet, we must go where humans have never dared and probe unexplored ocean depths. With this goal, WHOI scientists and engineers explore the earth’s final frontier, hoping to find solutions to our planet’s greatest challenges.
+
+WHOI’s mantra states, “If there is no tool to do what needs to be done, we invent one; if there is no experimental method, we devise it. Because, now more than ever, the ocean matters to us all.” Code Blue is supporting WHOI’s newly created Room 71 Communications, headed up by Chasing Coral star Richard Veevers.</div>
+                                    </div>
+                                    <div class="vertGap0"></div>
+
+                                    <button onclick="window.open('https://www.whoi.edu/what-we-do/', '_blank')" class="ctaButton">VISIT WOODS HOLE OCEANOGRAPHIC INSTITUTION</button>
+                              </div>
+                        </div>
+                  </div>
+            </div>
+      </div><div class="margin0LR">
+            <div class="margin1LR">
+                  
+                  <div class=""></div>
+                  <hr>
+                  <div class="threeSevenGrid">
+                        <div class="granteeLeft">
+                              <img style="mix-blend-mode: screen;" src="https://cdn.sanity.io/images/6jpkko0l/production/2b6919d3873372de115f344bcac563a031da7dd0-550x300.png"  class="grantee_logo">
+                        </div>
+                        <div>
+                              <div class="granteeRight">
+                                    <div class="granteeRightTextContainer">
+                                          <div class="bodyCopyBigger mobileOnlyBlock">
+                                                
+  <div class="magicTextContainer">
+    <div class="magicText" style="white-space: pre-line;">
+      The mission of the National Aquarium is to inspire conservation of the world’s aquatic treasures by changing the way people care for our blue planet. The National Aquarium is committed to the “triple bottom line,” a phrase describing initiatives that benefit people, the planet and the economy.
+
+They do this by advocating for responsible aquaculture, protecting ecosystems, rescuing and rehabilitating marine animals and implementing sustainable business practices.
+
+As a member of the Conservation Committee, Code Blue is working towards creating a wild sanctuary for dolphins freed from captivity.
+      <button
+    class="caret-button"
+    aria-label="Expand text"
+    aria-expanded="false"
+    >
+        <span class="caret">▼</span>
+      </button>
+    </div>
+  </div>
+
+  <script type="module">
+    import {initializeExpandCollapse} from "../../js/smartTextBox.js";
+    console.log("smartTextBox.njk");
+    document.addEventListener("DOMContentLoaded", initializeExpandCollapse);
+  </script>
+
+
+                                          </div>
+                                          <div class="bodyCopyBigger desktopOnlyBlock h1_0">The mission of the National Aquarium is to inspire conservation of the world’s aquatic treasures by changing the way people care for our blue planet. The National Aquarium is committed to the “triple bottom line,” a phrase describing initiatives that benefit people, the planet and the economy.
+
+They do this by advocating for responsible aquaculture, protecting ecosystems, rescuing and rehabilitating marine animals and implementing sustainable business practices.
+
+As a member of the Conservation Committee, Code Blue is working towards creating a wild sanctuary for dolphins freed from captivity.</div>
+                                    </div>
+                                    <div class="vertGap0"></div>
+
+                                    <button onclick="window.open('https://aqua.org/stories/2023-06-26-sanctuary-state', '_blank')" class="ctaButton">VISIT NATIONAL AQUARIUM</button>
+                              </div>
+                        </div>
+                  </div>
+            </div>
+      </div>
+    
+    <div class="vSpacer2"></div>
+    <div id="footer" class="footer">
+  <div id="wrapper">
+    <div class="footerChild" id="footerLeftCenter">
+      <div class="footerChild" id="footerLeftCenterTop"></div>
+      <div class="footerChild" id="footerLeftCenterBottom">
+        <div class="footerChild" id="footerLeft">
+          <img src="/assets/images/logo.svg" alt="Code Blue Logo">
+        </div>
+        <div class="footerChild" id="footerCenter">
+          <div class="smallShortSerifCopy" >Protection and restoration of our blue planet through innovative projects and strategic alliances.</div>
+          <div id="footerCenterChildBottom">
+            <div class="heroPhotoCredit">QUICK LINKS
+                <div class="vertGap1">
+                <br>
+              </div>
+              <ul>
+                <li >
+                  <a class="footerLinks" target="_blank" href="/pages/story">
+                                        About Us</a>
+                </li>
+                <li>
+                  <a class="footerLinks" target="_blank" href="/pages/impactMedia" >
+                                        Impact Media
+                                        </a>
+                </li>
+                <li>
+                  <a class="footerLinks" target="_blank" href="/pages/conservationGrantees" >
+                                        Conservation Grantees</a>
+                </li>
+              </ul>
+            </div>
+            <div></div>
+            <div class="heroPhotoCredit">CONTACT
+                            <div class="vertGap1">
+                <br>
+              </div>
+              <ul>
+                <li class="noTextWrapList">
+                  <a class="footerLinks" href="mailto:bonjour@codebluefoundation.org">
+                                        bonjour@codebluefoundation.org</a>
+                </li>
+                <li class="noTextWrapList">
+                  <div>Code Blue does not accept unsolicited proposals</div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footerChild footerFishContainer" id="footerRight">
+      <img class="footerFish" id="desktopFooterFish" src="/assets/images/fish4.png" alt="Sea Creature">
+      <div class="footerCopyright" id="footerRightCopy">Copyright 2025 Code Blue Foundation.<br>All rights reserved.</div>
+    </div>
+  </div>
+</div>
+    <div id="mobileFooter" class="footer mobileOnly_Padding1LR">
+  <div id="wrapper" class="margin0LR">
+    <div >
+      <div class="threeSevenGridMobile footerFishContainer" style="align-items: flex-end !important; justify-content: bottom !important;">
+        <img class="mobileFooterLogo" src="/assets/images/logo.svg" alt="Code Blue Logo">
+        <img class="footerFish" id="mobileFooterFish" src="/assets/images/fish4.png" alt="Sea Creature">
+      </div>
+      <div class="vSpacer1"></div>
+      <div class="smallShortSerifCopy">Protection and restoration of our blue planet through innovative projects and strategic alliances.</div>
+    </div>
+    <div class="vSpacer1"></div>
+    <div class="footerLinkTitle">QUICK LINKS
+      <div class="vertGap0"></div>
+      <ul>
+        <li>
+          <a class="footerLinks" target="_blank" href="/pages/story">About Us</a>
+        </li>
+        <li>
+          <a class="footerLinks" target="_blank" href="/pages/impactMedia" >Impact Media</a>
+        </li>
+        <li>
+          <a class="footerLinks" target="_blank" href="/pages/conservationGrantees" >Conservation Grantees</a>
+        </li>
+      </ul>
+    </div>
+    <div class="vertGap2"></div>
+    <div class="footerLinkTitle">CONTACT
+      <div class="vertGap0"></div>
+      <ul>
+        <li>
+          <a class="footerLinks" href="mailto:bonjour@codebluefoundation.org">
+                                        bonjour@codebluefoundation.org</a>
+        </li>
+        <li>
+        <li class="noTextWrapList">
+          <div>Code Blue does not accept unsolicited proposals</div>
+        </li>
+      </li>
+    </ul>
+  </div>
+  <div class="vSpacer1"></div>
+  <div class="footerCopyright" class="textAlignLeft">Copyright 2025 Code Blue Foundation. All rights reserved.</div>
+  <div class="vSpacer0"></div>
+</div>
+</div>
+    <div id="pageLoadingScreen">
+      <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.68/build/spline-viewer.js"></script>
+      <div class="pageLoadingScreenContent">
+            <div class="spinCTASplash navTitle">
+                  <div id="percentLoaded" class="monoSubtitle"></div>
+                  <div>
+                        <div id="upArrow">
+                              <svg width="15" height="9" viewBox="0 0 15 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1 7.5L7.5 1L14 7.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                              </svg>
+                        </div>
+                        <div class="spinningText">Spin</div>
+                  </div>
+            </div>
+            <spline-viewer class="splineViewer" loading="eager" url="https://prod.spline.design/odoegjhObaZER2iN/scene.splinecode"></spline-viewer>
+      </div>
+
+      <script>
+            const mySplineViewer = document.querySelector('.splineViewer');
+            mySplineViewer.addEventListener('load-complete', (e) => {
+                  console.log("load-complete");
+                  gsap.to(mySplineViewer, {
+                        opacity: 1,
+                        duration: 1,
+                        ease: "power2.inOut"
+                  });
+            });
+      </script>
+</div>
+
+    <div id="mobileMenu">
+  <div class="mobileMenuChild" id="mobileMenuChild0">
+    <ul>
+      <li>
+        <a class="mobileMenuNavLinks" href="/pages/story">About Us</a>
+      </li>
+      <li>
+        <a class="mobileMenuNavLinks" href="/pages/impactMedia" >Impact Media</a>
+      </li>
+      <li>
+        <a class="mobileMenuNavLinks" href="/pages/conservationGrantees" >Conservation Grantees</a>
+      </li>
+    </ul>
+  </div>
+  <div class="footerLinkTitle mobileMenuChild" id="mobileMenuChild1">
+    <div class="vertGap0"></div>
+    <ul>
+                  CONTACT
+                  <li>
+        <a class="footerLinks" href="mailto:bonjour@codebluefoundation.org">
+                                        bonjour@codebluefoundation.org</a>
+      </li>
+      <li>
+        <li class="noTextWrapList">
+          <div>Code Blue does not accept unsolicited proposals</div>
+        </li>
+      </li>
+    </ul>
+    <div class="vertGap1"></div>
+  </div>
+</div>
+  </body>
+</html>

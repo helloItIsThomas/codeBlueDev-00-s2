@@ -1,0 +1,78 @@
+---
+layout: layouts/base.njk
+title: "Conservation Grantees"
+---
+{% from 'macros/heroImg.njk' import heroImg %}
+{% from 'macros/staticHeaderComp.njk' import staticHeaderComp %}
+{% from 'macros/smartTextBox.njk' import smartTextBox %}
+<script type="module">
+      import {styleThisPageNavLink} from "../../js/nav.js";
+      styleThisPageNavLink(document.querySelector(".navLinks a[href='/pages/conservationGrantees'] span"));
+</script>
+<script type="module">
+      import {sv} from "/js/cursor/variables.js";
+      document.addEventListener("DOMContentLoaded", async () => {
+            const pageLoadingScreen = document.getElementById("pageLoadingScreen");
+
+            window.scrollTo({
+                  top: 0, // Replace with your desired vertical scroll position
+                  behavior: "instant"
+            });
+            pageLoadingScreen.style.display = "block";
+            //document.body.style.overflow = "hidden";
+            sv
+                  .lenis
+                  .stop();
+            window.scrollTo({
+                  top: 0, // Replace with your desired vertical scroll position
+                  behavior: "instant"
+            });
+
+            gsap.to(pageLoadingScreen, {
+                  opacity: 0,
+                  duration: 0.5,
+                  ease: "power3.out",
+                  delay: 2,
+                  onComplete: () => {
+                        pageLoadingScreen.style.display = "none";
+                        document.body.style.overflow = "auto";
+                        sv
+                              .lenis
+                              .start();
+                  }
+            });
+      });
+</script>
+
+{{ heroImg(someData.conservationGrantees.heroImage) }}
+{{ staticHeaderComp(someData.headers.grantees, someData.conservationGrantees) }}
+
+<div class="vSpacer1"></div>
+
+{%- for grantee in someData.grantees -%}
+      <div class="margin0LR">
+            <div class="margin1LR">
+                  {# <div class="vSpacer1"></div> #}
+                  <div class=""></div>
+                  <hr>
+                  <div class="threeSevenGrid">
+                        <div class="granteeLeft">
+                              <img style="mix-blend-mode: screen;" src="{{ grantee.image }}"  class="grantee_logo">
+                        </div>
+                        <div>
+                              <div class="granteeRight">
+                                    <div class="granteeRightTextContainer">
+                                          <div class="bodyCopyBigger mobileOnlyBlock">
+                                                {{ smartTextBox(grantee.description) }}
+                                          </div>
+                                          <div class="bodyCopyBigger desktopOnlyBlock h1_0">{{ grantee.description }}</div>
+                                    </div>
+                                    <div class="vertGap0"></div>
+
+                                    <button onclick="window.open('{{ grantee.link }}', '_blank')" class="ctaButton">VISIT {{ grantee.title | upper }}</button>
+                              </div>
+                        </div>
+                  </div>
+            </div>
+      </div>
+{%- endfor -%}

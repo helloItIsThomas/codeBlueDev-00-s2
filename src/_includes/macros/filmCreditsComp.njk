@@ -1,0 +1,52 @@
+{% macro fcc(credits, targetRole) %}
+      {% set flag = false %}
+      {# this loop checks and sets the flag #}
+      {% for credit in credits %}
+            {% if targetRole in credit.role %}
+                  {% set flag = true %}
+            {% endif %}
+      {% endfor %}
+      <div class="threeSevenGrid creditsSectionCopy">
+            <div>
+                  {% if flag %}
+                        {% if targetRole == "director" %}
+                              DIRECTOR
+                        {% elseif targetRole == "producer" %}
+                              PRODUCER
+                        {% elseif targetRole == "executiveProducer" %}
+                              EXECUTIVE PRODUCER
+                        {% elseif targetRole == "associateProducer" %}
+                              ASSOCIATE PRODUCER
+                        {% elseif targetRole == "cinematographer" %}
+                              CINEMATOGRAPHER
+                        {% elseif targetRole == "editor" %}
+                              EDITOR
+                        {% elseif targetRole == "writer" %}
+                              WRITER
+                        {% elseif targetRole == "cast" %}
+                              CAST
+                        {% elseif targetRole == "sound" %}
+                              SOUND
+                        {% elseif targetRole == "productionDesigner" %}
+                              PRODUCTION DESIGNER
+                        {% elseif targetRole == "artDirector" %}
+                              ART DIRECTOR
+                        {% elseif targetRole == "costumeDesigner" %}
+                              COSTUME DESIGNER
+                        {% elseif targetRole == "makeupArtist" %}
+                              MAKEUP ARTIST
+                        {% endif %}
+                  {% endif %}
+            </div>
+            {% set arr = [] %}
+            {% for credit in credits %}
+                  {% if targetRole in credit.role %}
+                        {% set arr = (arr.push(credit.fullName), arr) %}
+                  {% endif %}
+            {% endfor %}
+            {{ arr | join(', ') }}
+      </div>
+      {% if flag %}
+            <hr>
+      {% endif %}
+{% endmacro %}

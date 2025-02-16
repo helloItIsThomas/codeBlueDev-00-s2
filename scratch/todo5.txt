@@ -1,0 +1,10 @@
+
+
+
+POST FRIDAY
+• Make sure all images crop correctly (aka there are no aspect ratio issues with oddly shaped images)
+• Try to get the slug to auto-generate and remove it from the UI.
+• Put required on the necessary fields.
+• Make the desired film link (the one from the embed code) easier to get (aka not pull out the line from the iframe code).
+• Blend footer in with the body
+• Add awards to all films - Jane is looking into getting the awards for this.

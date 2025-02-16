@@ -1,0 +1,34 @@
+{% macro fmpOriginalComp(thisPartner) %}
+      <div class="imgCarousel margin0LR">
+            <div class="slides-container">
+                  <div class="slides-inner">
+                        {% for work in thisPartner.works %}
+                              <div class="carouselSlide">
+                                    <div class="sevenFiveGrid">
+                                          <div class="slideLeft" style="background-image: url({{ work.image.url }}); background-size: cover; background-position: center;"></div>
+                                          <div class="slideRight">
+                                                <div>
+                                                      <div class="bm3">{{work.typeOfMedia}}</div>
+                                                      <div class="vertGap1"></div>
+                                                      <div class="h1_0">{{work.title}}</div>
+                                                      <div class="vertGap1"></div>
+                                                      <div class="bs1">{{work.description}}</div>
+                                                      <div class="vertGap1"></div>
+                                                      <button class="ctaButton ">
+                                                            <a target="_blank" href="{{work.ctaButton.link}}" >
+                                                                  {{work.ctaButton.name}}
+                                                            </a>
+                                                      </button>
+                                                </div>
+                                                <div class="controls">
+                                                      <button class="prev"></button>
+                                                      <button class="next"></button>
+                                                </div>
+                                          </div>
+                                    </div>
+                              </div>
+                        {% endfor %}
+                  </div>
+            </div>
+      </div>
+{% endmacro %}

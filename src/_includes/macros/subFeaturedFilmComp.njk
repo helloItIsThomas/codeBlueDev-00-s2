@@ -1,0 +1,31 @@
+{% macro sffC(film) %}
+      <div class="subFeaturedFilmComp">
+            <div>
+                  <a href="/films/{{ film.slug.current }}">
+                        <img src="{{ film.posterImage }}" alt="{{ film.title }} poster">
+                  </a>
+            </div>
+            <div class="subFeaturedFilmCompBottomHalf" >
+                  <div>
+                        <div class="mediaType">
+                              {{ film.metadata.year }}
+                        </div>
+                        <div class="vertGap0"></div>
+                        <div class="serifSubtitle">
+                              {{ film.title }}
+                        </div>
+                        <div class="vertGap0"></div>
+                        <div class="bodyCopySmaller">
+                              {{ film.synopsis }}
+                        </div>
+                        <div class="vertGap0"></div>
+                  </div>
+                  <div class="vertGap0"></div>
+                  <button class="ctaButton ">
+                        <a href="/films/{{film.slug.current}}" >
+                        LEARN MORE
+                  </a>
+                  </button>
+            </div>
+      </div>
+{% endmacro %}

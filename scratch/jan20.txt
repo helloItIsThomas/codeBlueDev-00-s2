@@ -1,0 +1,11 @@
+
+Every time we instantiate a film from the schema, we want to have a new page generated.
+So I think we should start by making the film schema and instancing it once.
+
+ok. now what?
+
+Let's gather all films and create a new page for each.
+
+ok, we didnt make a new page for each film yet but we set up the schema and instancing.
+We don't need to dump in all the data to the cms yet.
+Now, let's work on designing the film page template.

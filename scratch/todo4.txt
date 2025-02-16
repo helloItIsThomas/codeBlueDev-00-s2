@@ -1,0 +1,14 @@
+• Thomas to replace the whale's image with the video on the Deep Rising section of the home page.
+
+• Thomas to make the films on the grid on Impact Media in chronological order.
+
+• Thomas to add email service and replace existing contact addresses with it.
+
+• Thomas to implement mobile + other sizes.
+
+
+
+ALMOST DONE
+• Thomas to fix the Featured Media Partner component.
+DONE
+• Thomas to make the cta buttons lock to the same height on the film grids.

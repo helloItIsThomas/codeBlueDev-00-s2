@@ -1,0 +1,28 @@
+.subFeaturedFilmComp {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.subFeaturedFilmComp a {
+  object-fit: cover;
+  object-position: top;
+  width: 100%;
+  /* max-height: 70%; */
+}
+
+.subFeaturedFilmCompBottomHalf {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+/* .subFeaturedFilmComp img { */
+/* object-fit: cover; */
+/* object-position: top; */
+/* width: 100%; */
+/* max-height: 70%; */
+/* } */

@@ -1,0 +1,55 @@
+
+THURSDAY
+
+• Add viewport aware movement to the content on all pages ( https://deeprising.com/documentary/ )
+
+• add 404 page and a mobile under construction page. 
+
+• Style Featured Media Partner section.
+
+• Get the menu to hide on scroll on all pages.
+
+• Finish uploading Featured Media Partner content
+  
+››› ››› ››› ››› ››› ››› ›››
+››  DEPENDENT ON MATTY  ›››
+››› ››› ››› ››› ››› ››› ›››
+
+• Implement bio cursor changes
+
+• For the mission section, it would be good to have a max width container for the text boxes.
+Maybe it’s 1400, try this and play around with it.
+      I think this is more of a problem with the text size than the container.
+
+–––
+POST FRIDAY
+–––
+
+• Mobile
+
+• Add awards to all films.
+
+• populate home page with CMS content where appropriate.
+
+• Make the desired film link (the one from the embed code) easier to get (aka not pull out the line from the iframe code).
+
+• Make sure all images crop correctly (aka there are no aspect ratio issues with oddly shaped images)
+
+• Try to get the slug to auto-generate and remove it from the UI.
+
+• Put required on the necessary fields.
+
+• Blend footer in with the body
+
+• add email service and plug in to all contact links / buttons
+
+• Replace the whales image with the video on the Deep Rising thing on the home page.
+
+• Make the cta buttons lock to the same height on the film grids.
+
+• Make the films on the grid on Impact Media in chronological order
+
+• Add an Impact section to each film and to the CMS. Matty to design?
+
+• "The squid fishing thing" should be added to the podcast scroll, and maybe other things (check my notes)
+

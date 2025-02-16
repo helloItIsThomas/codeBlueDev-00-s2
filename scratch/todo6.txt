@@ -1,0 +1,45 @@
+
+
+• Fix shitty text collapsing thing.
+   Including supporting page resizing.
+   
+Swap out all long text on mobile with text collapse component.
+
+Make the gap between featured film and mission smaller
+
+Put the film above the text and collapse the text for the featured film section.
+
+On top of the video it doesn’t need to have the media type “FILM”
+
+Lets put the heart Stopping Hourney “ above the video
+
+
+Put a gradient over the image and under the text for images, especially featured partnership image w ms thing.
+
+Lets add the wavy lines don’t worry about animating them
+
+Just for the blue let’s go down a bit on the type size.
+
+Put a line break so by ian … is on the second line.
+
+Hyphenate 10-part.
+
+Put the arrows above the image, space them out all the way horizontally
+
+Lets get rid of more featured films on mobile film page
+
+Get film page to scroll on mobile without the menu fucking it up.
+
+
+
+
+--- --- ---
+
+• Populate home page with CMS content where appropriate ( INCLUDING WHALE VID that is on the old wordpress database rn )
+
+• Set up a new email address for the email service and finalize email service.
+
+• find a better way to make sure the gradient doesnt cover up things.
+currently the reason it is not covering things is because is animating .h2_0, .h1_0, .h0_5, .h1_5, .bm0, etc in setup
+
+• Port site to cloudflare.

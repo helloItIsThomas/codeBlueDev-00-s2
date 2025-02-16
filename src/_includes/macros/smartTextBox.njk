@@ -1,0 +1,21 @@
+{% macro smartTextBox(copy) %}
+  <div class="magicTextContainer">
+    <div class="magicText" style="white-space: pre-line;">
+      {{ copy }}
+      <button
+    class="caret-button"
+    aria-label="Expand text"
+    aria-expanded="false"
+    >
+        <span class="caret">▼</span>
+      </button>
+    </div>
+  </div>
+
+  <script type="module">
+    import {initializeExpandCollapse} from "../../js/smartTextBox.js";
+    console.log("smartTextBox.njk");
+    document.addEventListener("DOMContentLoaded", initializeExpandCollapse);
+  </script>
+
+{% endmacro %}

@@ -1,0 +1,133 @@
+@font-face {
+  font-family: "cdmono-regular";
+  src: url("/assets/fonts/GeistMono-Light.ttf");
+}
+@font-face {
+  font-family: "cdmono-semiBold";
+  src: url("/assets/fonts/GeistMono-Medium.ttf");
+}
+
+@font-face {
+  font-family: "cdsans";
+  src: url("/assets/fonts/Geist-Thin.ttf");
+}
+@font-face {
+  font-family: "cdserif";
+  src: url("/assets/fonts/Albra-Thin.otf");
+}
+
+* {
+  /* font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif; */
+}
+
+._blue {
+  color: #1555be;
+}
+
+.centerType {
+  text-align: center;
+}
+
+/* NEW FONT STYLES */
+
+.heroTitle {
+  font-family: "cdserif";
+  font-size: clamp(
+    calc(var(--heroTitle) * 0.8),
+    5vw,
+    var(--heroTitle)
+  ); /* Responsive font size that scales with viewport width */
+  line-height: 0.95;
+
+  white-space: normal; /* Allows text to wrap normally */
+  overflow-wrap: break-word; /* Breaks long words to prevent overflow */
+  overflow-wrap: normal;
+  word-break: normal; /* Prevents breaking within words */
+}
+
+.heroDescription {
+  font-family: "cdsans";
+  font-size: var(--heroDescription);
+}
+.heroPhotoCredit {
+  font-family: "cdmono-regular";
+  font-size: var(--heroPhotoCredit);
+}
+.mediaType {
+  font-family: "cdmono-semiBold";
+  font-size: var(--mediaType);
+}
+.heroMetadata {
+  font-family: "cdmono-regular";
+  font-size: var(--heroMetadata);
+}
+.serifSubtitle {
+  font-family: "cdserif";
+  font-size: var(--serifSubtitle);
+}
+
+.serifSubtitle_blue {
+  font-family: "cdserif";
+  color: #1555be;
+  font-size: calc(var(--serifSubtitle) * 0.85);
+}
+
+.monoSubtitle {
+  font-family: "cdmono-semiBold";
+  font-size: var(--monoSubtitle);
+}
+.creditsSectionCopy {
+  font-family: "cdsans";
+  font-size: var(--creditsSectionCopy);
+}
+.ctaButtonTitle {
+  font-family: "cdmono-semiBold";
+  font-size: var(--ctaButtonTitle);
+}
+.navTitle {
+  font-family: "cdmono-semiBold";
+  font-size: var(--navTitle);
+}
+.bodyCopySmaller {
+  font-family: "cdsans";
+  font-size: var(--bodyCopySmaller);
+}
+.bodyCopyBigger {
+  font-family: "cdsans";
+  font-size: var(--bodyCopyBigger);
+}
+.longBigSerifCopy {
+  font-family: "cdserif";
+  font-size: var(--longBigSerifCopy);
+}
+.smallShortSerifCopy {
+  font-family: "cdserif";
+  font-size: var(--smallShortSerifCopy);
+}
+#purposeStatement {
+  font-family: "cdserif";
+  padding: 0 20% !important;
+  font-size: clamp(
+    2em,
+    5vw,
+    var(--purposeStatement)
+  ); /* Responsive font size that scales with viewport width */
+}
+.compSubtitle {
+  font-family: "cdserif";
+  font-size: var(--compSubtitle);
+}
+.footerLinks {
+  font-family: "cdsans";
+  font-size: var(--footerLinks);
+  hyphens: none;
+  white-space: nowrap;
+}
+.footerLinkTitle {
+  font-family: "cdmono-semiBold";
+  font-size: var(--footerLinkTitle);
+}
+.footerCopyright {
+  font-family: "cdsans";
+  font-size: var(--footerCopyright);
+}

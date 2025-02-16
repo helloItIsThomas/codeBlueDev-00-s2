@@ -1,0 +1,54 @@
+EASY
+
+Fix the leading on the splash page and make it sentence case.
+
+The arrow should use more vertical padding, it gets too close when it rises up.
+
+Get rid of the slide up thing on the nav.
+Also no underline.
+
+Try to get the font weights to match the Figma.
+
+The leading between OUR MISSION is also too much.
+
+Get rid of the underline buttons, make them light up when hovered.
+
+Fix the outline color around the buttons.
+
+The Deep Rising film should be Visit Website not watch now.
+
+FEATURED PARTNERSHIPS type is too big
+
+The CTA text is too thick on the buttons.
+
+Make all text on the footer sentence case.
+
+All the text everywhere looks bigger and thicker.
+
+Leading on Featured Media Partners
+Outlaw Ocean by Ian …
+Also it’s the wrong blue.
+Add corner radius to the images on this carousel
+
+Mission blue should be at the top of Conservation Grantees.
+Get rid of the title on the left, so it’s just the logo.
+
+Shari’s image is too big.
+There is some weird thing happening to the top of Shari’s image.
+
+No underline for the Code Blue logo.
+
+The Code Blue Story is the wrong image.
+
+For story,
+Shari Sant is too close to the image.
+
+More padding between the sections, the CTA goes right to the line which is bad.
+
+HARDER
+
+Get rid of the second home card and move the description back.
+
+Make sure the orb doesn’t crop, it should be a lot smaller,
+
+The responsiveness is causing Conservation Grantees to be too high.

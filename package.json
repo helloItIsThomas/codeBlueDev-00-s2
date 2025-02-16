@@ -1,0 +1,30 @@
+{
+  "name": "helloitsthomas-24-01",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "eleventy --serve",
+    "build": "eleventy",
+    "debug": "cross-env DEBUG=Eleventy* npx @11ty/eleventy"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@11ty/eleventy": "^2.0.1"
+  },
+  "dependencies": {
+    "@11ty/eleventy-fetch": "^5.0.2",
+    "@portabletext/react": "^3.2.0",
+    "@sanity/client": "^6.25.0",
+    "@sanity/image-url": "^1.1.0",
+    "gsap": "^3.12.5",
+    "p5": "^1.11.2",
+    "pixi-filters": "^6.1.0",
+    "pixi.js": "^8.6.6",
+    "shader-park-core": "^0.2.8",
+    "three": "^0.166.1",
+    "typescript": "^5.7.2"
+  }
+}

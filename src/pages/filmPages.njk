@@ -1,0 +1,227 @@
+---
+pagination:
+  data: someData.films
+  size: 1
+  alias: film
+permalink: "films/{{ film.slug.current }}/"
+layout: layouts/base.njk
+---
+
+{% from 'macros/filmCreditsComp.njk' import fcc %}
+{% from 'macros/heroImg.njk' import heroImg %}
+{% from 'macros/smartTextBox.njk' import smartTextBox %}
+
+<script type="module">
+  import {sv} from "/js/cursor/variables.js";
+  import {v} from "/js/variables.js";
+  import {initAwardTicker} from "/js/awardTicker.js";
+  const awardsTickerContainer = document.querySelector(".awardsTickerContainer");
+  const awardsTicker = document.querySelector(".awardsTicker");
+
+  if (v.isMobile) {
+    //document.querySelector(".mobileHeaderHero").style.display = "block";
+  } else {
+    //document.querySelector(".desktopHeaderHero").style.display = "block";
+  }
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    initAwardTicker(awardsTickerContainer, awardsTicker);
+    const pageLoadingScreen = document.getElementById("pageLoadingScreen");
+
+    window.scrollTo({
+      top: 0, // Replace with your desired vertical scroll position
+      behavior: "instant"
+    });
+    // pageLoadingScreen.style.display = "none";
+    pageLoadingScreen.style.display = "block";
+    document.body.style.overflow = "hidden";
+    sv
+      .lenis
+      .stop();
+    window.scrollTo({
+      top: 0, // Replace with your desired vertical scroll position
+      behavior: "instant"
+    });
+
+    gsap.to(pageLoadingScreen, {
+      opacity: 0,
+      duration: 0.5,
+      delay: 2,
+      ease: "power3.out",
+      onComplete: () => {
+        pageLoadingScreen.style.display = "none";
+        document.body.style.overflow = "auto";
+        pageLoadingScreen.style.pointerEvents = "auto";
+        sv
+          .lenis
+          .start();
+      }
+    });
+  });
+</script>
+
+{{ heroImg(film.heroImage) }}
+
+<div class="mobileHeaderHero mobileOnlyBlock">
+  <div class="headerTop margin0LR padding1LR">
+    <div class="headerText">
+      <div class="mediaType">FEATURED FILM</div>
+      <div class="vertGap0"></div>
+      <div>{{film.subTitle}}</div>
+      <div class="heroTitle">{{film.title}}</div>
+    </div>
+  </div>
+</div>
+
+<div class="desktopHeaderHeroImg desktopOnlyBlock"></div>
+
+<div class="desktopHeaderHero desktopOnlyBlock">
+  <div class="headerTop margin0LR padding1LR">
+    <div class="headerText">
+      <div class="mediaType">FEATURED FILM</div>
+      <div class="vertGap0"></div>
+      <div>{{film.subTitle}}</div>
+      <div class="heroTitle">{{film.title}}</div>
+    </div>
+  </div>
+</div>
+
+<div class="sevenThreeGrid margin0LR padding1LR">
+  <div class="heroDescription mobileOnlyBlock" style="position: relative;">{{smartTextBox(film.description)}}</div>
+  <div class="heroDescription desktopOnlyBlock" style="position: relative;">{{film.description}}</div>
+  <div style="position: relative;">
+    <button onclick="window.open('{{ film.ctaButton.link }}', '_blank');" class="ctaButton">{{ film.ctaButton.name | upper }}</button>
+    <div class="vSpacer0"></div>
+    {% for key, value in film.metadata %}
+      {% if key != "awards" %}
+        <div class="heroMetadata">{{ value }}</div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+<div class="vSpacer2"></div>
+
+<div class="awardsTickerContainer">
+  <div class="awardsTicker">
+    {% set areAwards = false %}
+    {% for award in film.metadata.awards %}
+      {% set areAwards = true %}
+      <img class="awardImg" src="{{ award.award.graphic.url }}" alt="{{ award.award.name }}">
+    {% endfor %}
+  </div>
+</div>
+
+{% if areAwards %}
+  <div class="vSpacer2"></div>
+{% endif %}
+
+<div class="margin0LR padding1LR" style="position: relative;">
+  <div class="serifSubtitle">WATCH THE TRAILER</div>
+</div>
+
+<div class="serifSubtitle_spaceBelow"></div>
+
+<div class="responsive-iframe margin0LR">
+  <iframe class="" src="{{ film.trailerLink }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</div>
+
+<div class="vSpacer2"></div>
+
+<div class="margin0LR padding1LR">
+  <div class="serifSubtitle">
+  IMAGE GALLERY
+  </div>
+  <div class="serifSubtitle_spaceBelow"></div>
+  <div class="galleryGrid">
+    {% for image in film.galleryImages %}
+      <img src="{{ image.url }}" alt="{{ image.alt }}">
+    {% endfor %}
+  </div>
+
+  <div class="vSpacer2"></div>
+
+  <div class="serifSubtitle">
+    CREDITS
+  </div>
+
+  <div class="serifSubtitle_spaceBelow"></div>
+
+  {{ fcc(film.credits, "director") }}
+  {{ fcc(film.credits, "editor") }}
+  {{ fcc(film.credits, "producer") }}
+  {{ fcc(film.credits, "writer") }}
+  {{ fcc(film.credits, "cinematographer") }}
+  {{ fcc(film.credits, "productionDesigner") }}
+  {{ fcc(film.credits, "sound") }}
+  {{ fcc(film.credits, "cast") }}
+  {{ fcc(film.credits, "associateProducer") }}
+  {{ fcc(film.credits, "executiveProducer") }}
+</div>
+
+{% from 'macros/subFeaturedFilmComp.njk' import sffC %}
+{% set notThisFilm = [] %}
+{% set newFilmsArray = [] %}
+
+{# here we are getting a list of all films that arent this page #}
+{% for f in someData.films %}
+  {% if f.title != film.title %}
+    {% set notThisFilm = (notThisFilm.push(f), notThisFilm) %}
+  {% endif %}
+{% endfor %}
+
+<br>
+
+{% set uniqueValues = [] %}
+{# Generate unique random values until we have three #}
+{% for i in range(20) %}
+  {# Limit attempts to avoid infinite loops #}
+  {% set rand = range(0, notThisFilm.length) | random %}
+  {# Check if the random value is already in the uniqueValues array #}
+  {% set isDuplicate = false %}
+  {% for value in uniqueValues %}
+    {% if value == rand %}
+      {% set isDuplicate = true %}
+    {% endif %}
+  {% endfor %}
+  {% if not isDuplicate %}
+    {% set uniqueValues = (uniqueValues.push(rand), uniqueValues) %}
+  {% endif %}
+{% endfor %}
+{# If we have fewer than 3 unique values, fill with random values #}
+{% for i in range(3 - uniqueValues | length) %}
+  {% set rand = range(0, 5) | random %}
+  {% set uniqueValues = (uniqueValues.push(rand), uniqueValues) %}
+{% endfor %}
+
+{% set threeUniqueValues = [] %}
+{% for i in range(3) %}
+  {% set threeUniqueValues = (threeUniqueValues.push(uniqueValues[i]), threeUniqueValues) %}
+{% endfor %}
+
+<div class="vSpacer2"></div>
+
+<div class="margin0LR padding1LR desktopOnlyBlock">
+  <div class="serifSubtitle">MORE FEATURED FILMS</div>
+</div>
+
+<div class="serifSubtitle_spaceBelow"></div>
+
+<div class="margin0LR mobileOnlyBlock">
+  {% set i = threeUniqueValues[0] %}
+  {% if notThisFilm[i] %}
+    {# {{ sffC(notThisFilm[i]) }} #}
+    <div class="mobileOnlyBlock"></div>
+  {% endif %}
+</div>
+
+<div class="threeFeaturedFilmsComp margin0LR desktopOnlyBlock">
+  <div class="threeColGrid mobileOnly_Padding1LR">
+    {% for i in threeUniqueValues %}
+      {% if notThisFilm[i] %}
+        {{ sffC(notThisFilm[i]) }}
+        <div class="mobileOnlyBlock"></div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>

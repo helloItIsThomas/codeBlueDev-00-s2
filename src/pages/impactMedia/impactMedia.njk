@@ -1,0 +1,90 @@
+---
+layout: layouts/base.njk
+title: "Impact Media"
+---
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/Draggable.min.js"></script>
+<script type="module" src="/js/imgCarousel.js"></script>
+{% from 'macros/heroImg.njk' import heroImg %}
+{% from 'macros/staticHeaderComp.njk' import staticHeaderComp %}
+{% from 'macros/subFeaturedFilmComp.njk' import sffC %}
+
+<script type="module">
+  import {sv} from "/js/cursor/variables.js";
+  document.addEventListener("DOMContentLoaded", async () => {
+    const pageLoadingScreen = document.getElementById("pageLoadingScreen");
+
+    window.scrollTo({
+      top: 0, // Replace with your desired vertical scroll position
+      behavior: "instant"
+    });
+    // pageLoadingScreen.style.display = "none";
+    pageLoadingScreen.style.display = "block";
+    // document.body.style.overflow = "hidden";
+    sv
+      .lenis
+      .stop();
+    window.scrollTo({
+      top: 0, // Replace with your desired vertical scroll position
+      behavior: "instant"
+    });
+
+    gsap.to(pageLoadingScreen, {
+      opacity: 0,
+      duration: 0.5,
+      ease: "power3.out",
+      delay: 2,
+      onComplete: () => {
+        pageLoadingScreen.style.display = "none";
+        document.body.style.overflow = "auto";
+        sv
+          .lenis
+          .start();
+      }
+    });
+  });
+</script>
+
+<script type="module">
+  import {styleThisPageNavLink} from "../../js/nav.js";
+  styleThisPageNavLink(document.querySelector(".navLinks a[href='/pages/impactMedia'] span"));
+</script>
+
+{{ heroImg(someData.impactMedia.heroImage) }}
+{{ staticHeaderComp(someData.headers.impactMedia, someData.impactMedia) }}
+
+{% set thisPartner = someData.mediaPartners[0] %}
+
+<div class="vSpacer2"></div>
+
+<div class="h1_0 margin0LR">
+  <div class="serifSubtitle margin1LR">
+            OUR FILMS
+      </div>
+</div>
+
+<div class="serifSubtitle_spaceBelow"></div>
+
+<div class="threeFeaturedFilmsComp margin0LR">
+  <div class="threeColGrid mobileOnly_Padding1LR">
+
+    {% for f in someData.films | sort(attribute = 'metadata.year') | reverse %}
+      {{ sffC(f) }}
+      <div class="vertGap2 mobileOnlyBlock"></div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="vSpacer1"></div>
+<div class="carouselTitle">
+  <div class="serifSubtitle centered">
+    FEATURED MEDIA PARTNER
+  </div>
+  <div class="serifSubtitle_blue centered">
+    {{ thisPartner.partnerProject | upper }}<br>BY
+    {{ thisPartner.partnerName | upper }}
+  </div>
+</div>
+<div class="serifSubtitle_spaceBelow"></div>
+
+{% from 'macros/featuredMediaPartner.njk' import fmpComp %}
+{{ fmpComp(thisPartner) }}

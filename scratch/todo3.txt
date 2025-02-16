@@ -1,0 +1,29 @@
+
+
+• Mobile
+
+• populate home page with CMS content where appropriate.
+
+• Make the desired film link (the one from the embed code) easier to get (aka not pull out the line from the iframe code).
+
+• Make sure all images crop correctly (aka there are no aspect ratio issues with oddly shaped images)
+
+• Try to get the slug to auto-generate and remove it from the UI.
+
+• Put required on the necessary fields.
+
+• Blend footer in with the body
+
+• add email service and plug in to all contact links / buttons
+
+• Replace the whales image with the video on the Deep Rising thing on the home page.
+
+• Make the cta buttons lock to the same height on the film grids.
+
+• Make the films on the grid on Impact Media in chronological order
+
+• Add an Impact section to each film and to the CMS. Matty to design?
+
+• "The squid fishing thing" should be added to the podcast scroll, and maybe other things (check my notes)
+
+• Add awards to all films - Shari person is looking into getting the awards for this.

@@ -1,0 +1,49 @@
+{% macro staticHeaderComp(headers, page) %}
+  <div class="mobileHeaderHero mobileOnlyBlock">
+    <div class="headerTop margin0LR padding1LR">
+      <div class="headerText">
+        <div>
+          {% if headers.subTitle %}
+            <div class="monoSubtitle">{{headers.subTitle | upper}}</div>
+            <div class="vertGap1"></div>
+          {% endif %}
+          <div class="heroTitle">{{headers.title}}</div>
+          {%if headers.subDescription %}
+            <div class="vSpacer0"></div>
+            <div class="heroDescription">{{headers.subDescription}}</div>
+          {% endif %}
+          {% if page.imageCredit %}
+            <div class="vertGap1"></div>
+            <div class="heroPhotoCredit">PHOTO: {{page.imageCredit | upper}}</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="desktopHeaderHeroImg desktopOnlyBlock"></div>
+  {# <div class="headerHero margin0LR"> #}
+  <div class="desktopHeaderHero desktopOnlyBlock margin0LR">
+    <div class="headerTop margin1LR">
+      <div class="headerText">
+        <div class="twoColGrid">
+          <div>
+            {% if headers.subTitle %}
+              <div class="monoSubtitle">{{headers.subTitle | upper}}</div>
+              <div class="vertGap1"></div>
+            {% endif %}
+            <div class="heroTitle">{{headers.title}}</div>
+            {%if headers.subDescription %}
+              <div class="vSpacer0"></div>
+              <div class="heroDescription">{{headers.subDescription}}</div>
+            {% endif %}
+          </div>
+        </div>
+        {% if page.imageCredit %}
+          <div class="vertGap1"></div>
+          <div class="heroPhotoCredit">PHOTO: {{page.imageCredit | upper}}</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endmacro %}

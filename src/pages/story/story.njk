@@ -1,0 +1,86 @@
+---
+layout: layouts/base.njk
+title: "The Code Blue Story"
+---
+{% from 'macros/heroImg.njk' import heroImg %}
+{% from 'macros/staticHeaderComp.njk' import staticHeaderComp %}
+{% from 'macros/smartTextBox.njk' import smartTextBox %}
+
+<script type="module">
+  import {styleThisPageNavLink} from "../../js/nav.js";
+  styleThisPageNavLink(document.querySelector(".navLinks a[href='/pages/story'] span"));
+</script>
+<script type="module">
+  import {sv} from "/js/cursor/variables.js";
+  document.addEventListener("DOMContentLoaded", async () => {
+    const pageLoadingScreen = document.getElementById("pageLoadingScreen");
+
+    window.scrollTo({
+      top: 0, // Replace with your desired vertical scroll position
+      behavior: "instant"
+    });
+    // pageLoadingScreen.style.display = "none";
+    pageLoadingScreen.style.display = "block";
+    //document.body.style.overflow = "hidden";
+    sv
+      .lenis
+      .stop();
+    window.scrollTo({
+      top: 0, // Replace with your desired vertical scroll position
+      behavior: "instant"
+    });
+
+    gsap.to(pageLoadingScreen, {
+      opacity: 0,
+      duration: 0.5,
+      ease: "power3.out",
+      delay: 2,
+      onComplete: () => {
+        pageLoadingScreen.style.display = "none";
+        document.body.style.overflow = "auto";
+        sv
+          .lenis
+          .start();
+      }
+    });
+  });
+</script>
+
+{{ heroImg(someData.story.heroImage) }}
+{{ staticHeaderComp(someData.headers.story, someData.story) }}
+
+<div class="vSpacer1"></div>
+
+<div class="margin0LR h1_0 mobileOnlyBlock">
+  <div class="longBigSerifCopy margin1LR">
+    {{ smartTextBox(someData.story.description) }}
+  </div>
+</div>
+
+<div class="vSpacer2"></div>
+<div class="vSpacer2"></div>
+
+<div class="margin0LR h1_0 desktopOnlyBlock">
+  <div class="longBigSerifCopy margin1LR">
+    {{ someData.story.description }}
+  </div>
+</div>
+
+<div class="vSpacer2"></div>
+
+<div class="margin0LR">
+  <div class="threeSevenGrid margin1LR">
+    <div class="shariBioLeft">
+      <div class="serifSubtitle h1_0">Shari Sant</div>
+      {# <div class="vertGap1"></div> #}
+      <img class="h1_0" src="{{someData.story.shariPhoto}}" alt="Photograph of Shari">
+    </div>
+    <div class="bodyCopyBigger h1_0 mobileOnlyBlock" style="white-space: pre-line;">
+      {{ smartTextBox("Shari is founder and President of Code Blue Foundation, Secretary/Trustee of the Summit Charitable Foundation, founding board member of Mission Blue, and on the Board of Trustees of Woods Hole Oceanographic Institute. Shari is also a member of the National Geographic Impact Story Lab Advisory Council, World Wildlife Fund’s National Council, and Advisory Council of Focused on Nature. As a producer, Shari has worked on renowned environmental films including as an Executive Producer on Mission Blue and Chasing Coral on Netflix. She is also Executive Producer on Anote’s Ark, Sharkwater Extinction and Ghost Fleet. Most recently, Shari is Executive Producer on the newly released film, Deep Rising which premiered at Sundance in 2023, and also on Gaucho Gaucho and Battle For Laikipia which premiered at Sundance in 2024. \n\n A graduate of NYU with a BA in Sociology, Shari worked as Design Director and Senior Stylist for Ralph Lauren in New York for nine years before moving to San Francisco to be Esprit’s Visual Director. She later founded the environmental fashion and home furnishings store Worldware in San Francisco in 1994. Worldware was one of the first cutting-edge lifestyle stores with an environmental focus. She sold the business in 2001 to devote herself full-time to her conservation work. Shari also studied advanced photography at International Center of Photography in NY, and has a Producing Certification from UCLA Film School. ") }}
+    </div>
+    <div class="bodyCopyBigger h1_0 desktopOnlyBlock" style="white-space: pre-line;">
+      <div class="vertGap2"></div>
+      {{ "Shari is founder and President of Code Blue Foundation, Secretary/Trustee of the Summit Charitable Foundation, founding board member of Mission Blue, and on the Board of Trustees of Woods Hole Oceanographic Institute. Shari is also a member of the National Geographic Impact Story Lab Advisory Council, World Wildlife Fund’s National Council, and Advisory Council of Focused on Nature. As a producer, Shari has worked on renowned environmental films including as an Executive Producer on Mission Blue and Chasing Coral on Netflix. She is also Executive Producer on Anote’s Ark, Sharkwater Extinction and Ghost Fleet. Most recently, Shari is Executive Producer on the newly released film, Deep Rising which premiered at Sundance in 2023, and also on Gaucho Gaucho and Battle For Laikipia which premiered at Sundance in 2024. \n\n A graduate of NYU with a BA in Sociology, Shari worked as Design Director and Senior Stylist for Ralph Lauren in New York for nine years before moving to San Francisco to be Esprit’s Visual Director. She later founded the environmental fashion and home furnishings store Worldware in San Francisco in 1994. Worldware was one of the first cutting-edge lifestyle stores with an environmental focus. She sold the business in 2001 to devote herself full-time to her conservation work. Shari also studied advanced photography at International Center of Photography in NY, and has a Producing Certification from UCLA Film School. " }}
+    </div>
+  </div>
+</div>
