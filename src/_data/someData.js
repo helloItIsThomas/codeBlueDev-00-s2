@@ -20,7 +20,7 @@ module.exports = async function () {
 
   async function getHome() {
     const home = await client.fetch(
-      '*[_type == "home"]{"video": videoFile.asset->url, "splashVideo": splashVideo.asset->url, "missionVideo": videoFile.asset->url}'
+      '*[_type == "home"]{"video": videoFile.asset->url, "splashVideo": splashVideo.asset->url, "missionVideo": missionVideo.asset->url}'
     );
     return home;
   }

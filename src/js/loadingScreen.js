@@ -19,17 +19,15 @@ export async function initLoadingScreen(_logoLottie) {
   // const tideData = await getTideData();
   // v.tideData = tideData;
 
-  const percentLoadedElement = document.getElementById("percentLoaded");
-
   gsap.to(timer, {
     val: 1.0,
-    duration: 2.0,
+    duration: 3.0,
     onUpdate: () => {
       _logoLottie.setFrame(Math.ceil(timer.val * _logoLottie.totalFrames));
 
-      const percentLoadedValue = gsap.getProperty(timer, "val");
-      percentLoadedElement.textContent =
-        Math.ceil(percentLoadedValue * 100) + "%";
+      // const percentLoadedValue = gsap.getProperty(timer, "val");
+      // percentLoadedElement.textContent =
+      //   Math.ceil(percentLoadedValue * 100) + "%";
     },
     onComplete: () => {
       gsap.to(loadingScreen, {

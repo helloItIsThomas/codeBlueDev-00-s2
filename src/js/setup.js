@@ -43,13 +43,48 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const pageLoadingScreen = document.getElementById("pageLoadingScreen");
 
+  const indexLoadingScreen = document.getElementById("indexLoadingScreen");
+
   sv.lenis.stop();
 
   window.scrollTo({
     top: 0, // Replace with your desired vertical scroll position
     behavior: "instant",
   });
-  pageLoadingScreen.style.display = "block";
+
+  if (pageLoadingScreen) {
+    console.log("pageLoadingScreen");
+    pageLoadingScreen.style.display = "block";
+    gsap.to(pageLoadingScreen, {
+      opacity: 0,
+      duration: 1.0,
+      ease: "power3.out",
+      delay: 3,
+      onComplete: () => {
+        pageLoadingScreen.style.display = "none";
+        document.body.style.overflow = "auto";
+      },
+    });
+  }
+  if (indexLoadingScreen) {
+    console.log("indexLoadingScreen");
+    indexLoadingScreen.style.display = "block";
+
+    const percentLoaded = indexLoadingScreen.querySelector("#percentLoaded");
+    percentLoaded.textContent = "0%";
+
+    simulateLoadingProgress(percentLoaded, 100, () => {
+      gsap.to(indexLoadingScreen, {
+        opacity: 0,
+        duration: 1.0,
+        ease: "power3.out",
+        onComplete: () => {
+          indexLoadingScreen.style.display = "none";
+          document.body.style.overflow = "auto";
+        },
+      });
+    });
+  }
   document.body.style.overflow = "hidden";
   window.scrollTo({
     top: 0, // Replace with your desired vertical scroll position
@@ -66,17 +101,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       delay: 2.9,
     }
   );
-
-  gsap.to(pageLoadingScreen, {
-    opacity: 0,
-    duration: 1.0,
-    ease: "power3.out",
-    delay: 3,
-    onComplete: () => {
-      pageLoadingScreen.style.display = "none";
-      document.body.style.overflow = "auto";
-    },
-  });
 
   // SETUP PARALLAX FISH start
   // const mobileFooterScrollTrigger = {
@@ -270,4 +294,26 @@ async function mySetup() {
     sv.clock = sv.pApp.ticker.lastTime * 0.001;
     render(instancePositionBuffer, alphaBuffer, triangleMesh);
   });
+}
+
+function simulateLoadingProgress(element, target, callback) {
+  let current = 0;
+
+  function updateProgress() {
+    // Random increment between 1% to 5%
+    const increment = Math.floor(Math.random() * 10) + 1;
+    current += increment;
+
+    if (current >= target) {
+      element.textContent = `${target}%`;
+      callback();
+    } else {
+      element.textContent = `${current}%`;
+      // Random delay between 100ms to 500ms
+      const delay = Math.floor(Math.random() * 400) + 100;
+      setTimeout(updateProgress, delay);
+    }
+  }
+
+  updateProgress();
 }

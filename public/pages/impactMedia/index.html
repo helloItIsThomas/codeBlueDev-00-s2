@@ -79,14 +79,14 @@
     </div>
     <div class="mobileOnlyBlock">
       <div class="navBar margin0LR">
-      <div id="hamburgerMenu">
-            <img id="burgerIcon" src="/assets/icons/hamburger.svg" alt="Menu"></img>
-            <img id="burgerWavyIcon" src="/assets/icons/burger-wavy.svg" alt="Menu"></img>
-      </div>
       <div class="navLogo">
             <a href="/index.html">
                   <img src="/assets/images/logo.svg" alt="Code Blue">
             </a>
+      </div>
+      <div id="hamburgerMenu">
+            <img id="burgerIcon" src="/assets/icons/hamburger.svg" alt="Menu"></img>
+            <img id="burgerWavyIcon" src="/assets/icons/burger-wavy.svg" alt="Menu"></img>
       </div>
 </div>
     </div>
@@ -560,6 +560,8 @@
             </div>
       </div>
 
+
+<div id="pageLoadingScreen"></div>
     
     <div class="vSpacer2"></div>
     <div id="footer" class="footer">
@@ -662,35 +664,6 @@
   <div class="footerCopyright" class="textAlignLeft">Copyright 2025 Code Blue Foundation. All rights reserved.</div>
   <div class="vSpacer0"></div>
 </div>
-</div>
-    <div id="pageLoadingScreen">
-      <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.68/build/spline-viewer.js"></script>
-      <div class="pageLoadingScreenContent">
-            <div class="spinCTASplash navTitle">
-                  <div id="percentLoaded" class="monoSubtitle"></div>
-                  <div>
-                        <div id="upArrow">
-                              <svg width="15" height="9" viewBox="0 0 15 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M1 7.5L7.5 1L14 7.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                              </svg>
-                        </div>
-                        <div class="spinningText">Spin</div>
-                  </div>
-            </div>
-            <spline-viewer class="splineViewer" loading="eager" url="https://prod.spline.design/odoegjhObaZER2iN/scene.splinecode"></spline-viewer>
-      </div>
-
-      <script>
-            const mySplineViewer = document.querySelector('.splineViewer');
-            mySplineViewer.addEventListener('load-complete', (e) => {
-                  console.log("load-complete");
-                  gsap.to(mySplineViewer, {
-                        opacity: 1,
-                        duration: 1,
-                        ease: "power2.inOut"
-                  });
-            });
-      </script>
 </div>
 
     <div id="mobileMenu">
