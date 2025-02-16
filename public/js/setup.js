@@ -71,9 +71,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     indexLoadingScreen.style.display = "block";
 
     const percentLoaded = indexLoadingScreen.querySelector("#percentLoaded");
-    percentLoaded.textContent = "0%";
+    percentLoaded.textContent = "56%";
 
-    simulateLoadingProgress(percentLoaded, 100, () => {
+    simulateLoadingProgress(percentLoaded, 100, 60, () => {
       gsap.to(indexLoadingScreen, {
         opacity: 0,
         duration: 1.0,
@@ -296,8 +296,8 @@ async function mySetup() {
   });
 }
 
-function simulateLoadingProgress(element, target, callback) {
-  let current = 0;
+function simulateLoadingProgress(element, target, start, callback) {
+  let current = start;
 
   function updateProgress() {
     // Random increment between 1% to 5%
