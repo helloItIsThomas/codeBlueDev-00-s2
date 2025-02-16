@@ -76,6 +76,12 @@
   font-family: "cdmono-semiBold";
   font-size: var(--monoSubtitle);
 }
+
+.percentLoadedFont {
+  font-family: "cdmono-semiBold";
+  font-size: 3em;
+}
+
 .creditsSectionCopy {
   font-family: "cdsans";
   font-size: var(--creditsSectionCopy);
