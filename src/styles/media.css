@@ -28,6 +28,10 @@ video::-webkit-media-controls-fullscreen-button {
   display: none !important;
 }
 
+.bgVideo .video-controls {
+  opacity: 0.2;
+}
+
 img {
   max-width: 100%;
   height: auto;

@@ -1,7 +1,9 @@
 <div class="margin0LR" id="mission">
   <div id="missionBackground">
 
-    <video src="{{ someData.home[0].missionVideo | url }}" muted loop playsinline disablepictureinpicture preload="auto"  autoplay></video>
+    <video class="bgVideo" muted loop playsinline controls autoplay>
+      <source src="{{ someData.home[0].missionVideo | url }}" type="video/mp4">
+    </video>
   </div>
   <div id="missionForeground" class="padding1LR ">
     <div>
