@@ -1,0 +1,13 @@
+
+Also get the autoplay video to work on the splash page, follow how we did it from the Our Mission Bit
+
+More of the cursor guys.
+
+Make the buttons float to the bottom of the section.
+
+For the our mission bit on mobile, 
+Treat it like the featured film bit.
+
+Get rid of the contact button for the Our Mission bit for desktop and mobile.
+
+For the orb, slide the loading time scale up so its low end 3.5 seconds high end 4.5 seconds.

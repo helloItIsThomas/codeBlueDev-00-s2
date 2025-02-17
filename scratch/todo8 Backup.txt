@@ -1,0 +1,16 @@
+! IMPORTANT Pull something that is more ambient for the new video background bit, pull something inspiring.
+
+! IMPORTANT
+Make the text pop up with the orb
+
+More of the cursor guys.
+
+Make the buttons float to the bottom of the section.
+
+For the our mission bit on mobile, 
+Treat it like the featured film bit.Also get the autoplay video to work on the splash page, follow how we did it from the Our Mission Bit
+
+Get rid of the contact button for the Our Mission bit for desktop and mobile.
+
+For the orb, slide the scale up so its low end 3.5 seconds high end 4.5 seconds.
+
