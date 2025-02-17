@@ -33,6 +33,11 @@ function handleMediaQueryChange(event) {
 handleMediaQueryChange(mediaQuery);
 mediaQuery.addEventListener("change", handleMediaQueryChange);
 
+document.scrollTo({
+  top: 0, // Replace with your desired vertical scroll position
+  behavior: "instant",
+});
+
 document.addEventListener("DOMContentLoaded", async () => {
   window.scrollTo({
     top: 0, // Replace with your desired vertical scroll position
