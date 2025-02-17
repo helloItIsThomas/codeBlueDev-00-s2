@@ -1,6 +1,9 @@
 
 Also get the autoplay video to work on the splash page, follow how we did it from the Our Mission Bit
 
+Add a fallback in case low power mode is on or some other thing is preventing autoplay
+https://stackoverflow.com/questions/46670150/low-power-mode-detection-in-javascript-for-ios11
+
 More of the cursor guys.
 
 Make the buttons float to the bottom of the section.

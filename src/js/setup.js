@@ -34,6 +34,11 @@ handleMediaQueryChange(mediaQuery);
 mediaQuery.addEventListener("change", handleMediaQueryChange);
 
 document.addEventListener("DOMContentLoaded", async () => {
+  window.scrollTo({
+    top: 0, // Replace with your desired vertical scroll position
+    behavior: "instant",
+  });
+
   // SETUP LENIS start
   sv.lenis = new Lenis({
     autoRaf: true,
