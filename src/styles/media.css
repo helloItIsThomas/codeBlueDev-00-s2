@@ -28,8 +28,9 @@ video::-webkit-media-controls-fullscreen-button {
   display: none !important;
 }
 
-.bgVideo .video-controls {
-  opacity: 0.9;
+.bgVideo {
+  touch-action: none;
+  pointer-events: none;
 }
 
 img {

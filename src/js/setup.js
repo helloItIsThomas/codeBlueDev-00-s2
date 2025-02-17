@@ -33,9 +33,9 @@ function handleMediaQueryChange(event) {
 handleMediaQueryChange(mediaQuery);
 mediaQuery.addEventListener("change", handleMediaQueryChange);
 
-Event.observe(window, "load", function () {
-  window.scrollTo(0, 0);
-});
+// Event.observe(window, "load", function () {
+//   window.scrollTo(0, 0);
+// });
 
 document.addEventListener("DOMContentLoaded", async () => {
   window.scrollTo({

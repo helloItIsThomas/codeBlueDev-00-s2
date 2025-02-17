@@ -12,6 +12,10 @@ export async function initLoadingScreen(_logoLottie) {
     top: 0, // Replace with your desired vertical scroll position
     behavior: "instant",
   });
+  window.scrollTo({
+    top: 0, // Replace with your desired vertical scroll position
+    behavior: "auto",
+  });
 
   const timer = {
     val: 0,

@@ -28,6 +28,11 @@ video::-webkit-media-controls-fullscreen-button {
   display: none !important;
 }
 
+.bgVideo {
+  touch-action: none;
+  pointer-events: none;
+}
+
 img {
   max-width: 100%;
   height: auto;
