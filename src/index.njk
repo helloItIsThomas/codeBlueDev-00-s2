@@ -10,10 +10,19 @@ title: "Code Blue"
 <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.68/build/spline-viewer.js"></script>
 {# <script type="module" src="/js/tideSketch.js"></script> #}
 
+<script type="module">
+    const video = document.getElementById("bgVideoSplash");
+    document.addEventListener("DOMContentLoaded", () => {
+        setTimeout(() => {
+            video.play();
+        }, 1000); // Video will start playing after 3 seconds
+    });
+</script>
+
 <div class="centered" id="splash">
     <div class="background" id="splashVideo">
         <div>
-            <video class="bgVideo" src="{{ someData.home[0].splashVideo | url }}" muted loop playsinline autoplay></video>
+            <video class="bgVideo" id="bgVideoSplash" src="{{ someData.home[0].splashVideo | url }}" muted loop playsinline></video>
         </div>
     </div>
     <div id="splashForeground"></div>
