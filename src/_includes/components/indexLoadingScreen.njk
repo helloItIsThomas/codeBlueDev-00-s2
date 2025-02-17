@@ -16,8 +16,15 @@
 
   <script>
     const mySplineViewer = document.querySelector('.splineViewer');
+    const percentLoaded = indexLoadingScreen.querySelector("#percentLoaded");
+
     mySplineViewer.addEventListener('load-complete', (e) => {
       console.log("load-complete");
+      gsap.to(percentLoaded, {
+        opacity: 1,
+        duration: 1,
+        ease: "power2.inOut"
+      });
       gsap.to(mySplineViewer, {
         opacity: 1,
         duration: 1,

@@ -136,7 +136,7 @@
 <div class="margin0LR" id="mission">
   <div id="missionBackground">
 
-    <video src="https://cdn.sanity.io/files/6jpkko0l/production/9270f90a68653ddf2b8b2d59df0bb034f6341bef.mp4" muted loop playsinline autoplay controls="false"></video>
+    <video src="https://cdn.sanity.io/files/6jpkko0l/production/f6fbd752765a387a8baea77978e0498c3e300543.mov" muted loop playsinline autoplay controls="false"></video>
   </div>
   <div id="missionForeground" class="padding1LR ">
     <div>
@@ -305,8 +305,15 @@
 
   <script>
     const mySplineViewer = document.querySelector('.splineViewer');
+    const percentLoaded = indexLoadingScreen.querySelector("#percentLoaded");
+
     mySplineViewer.addEventListener('load-complete', (e) => {
       console.log("load-complete");
+      gsap.to(percentLoaded, {
+        opacity: 1,
+        duration: 1,
+        ease: "power2.inOut"
+      });
       gsap.to(mySplineViewer, {
         opacity: 1,
         duration: 1,
