@@ -17,6 +17,11 @@
                                           <div class="vertGap1"></div>
                                           <div class="bodyCopySmaller">{{work.description}}</div>
                                           <div class="vertGap1"></div>
+                                          {% if work.impact %}
+                                                <br>
+                                                <div class="bodyCopySmaller">{{work.impact}}</div>
+                                                <div class="vertGap1"></div>
+                                          {% endif %}
                                     </div>
                                     <div class="vertGap1"></div>
                                     <div>
