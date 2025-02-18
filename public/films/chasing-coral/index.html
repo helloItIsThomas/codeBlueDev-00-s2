@@ -48,7 +48,8 @@
     <link rel="stylesheet" href="/styles/story.css"/>
     <link rel="stylesheet" href="/styles/header.css"/>
     <link rel="stylesheet" href="/styles/slidingTextbox.css"/>
-    <title id="page-title"></title>
+    
+    <title id="page-title">Code Blue S2</title>
   </head>
   <body>
     <div class="desktopOnlyBlock">
@@ -112,22 +113,22 @@
 
   document.addEventListener("DOMContentLoaded", async () => {
     initAwardTicker(awardsTickerContainer, awardsTicker);
+
     const pageLoadingScreen = document.getElementById("pageLoadingScreen");
 
-    window.scrollTo({
-      top: 0, // Replace with your desired vertical scroll position
-      behavior: "instant"
-    });
-    // pageLoadingScreen.style.display = "none";
     pageLoadingScreen.style.display = "block";
     document.body.style.overflow = "hidden";
     sv
       .lenis
       .stop();
-    window.scrollTo({
-      top: 0, // Replace with your desired vertical scroll position
-      behavior: "instant"
-    });
+
+    window.scrollTo(0, 0);
+    setTimeout(function () {
+      var scrollPos = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+      if (scrollPos < 1) {
+        window.scrollTo(0, 1);
+      }
+    }, 0);
 
     gsap.to(pageLoadingScreen, {
       opacity: 0,
@@ -262,6 +263,8 @@
       
     
       
+    
+      
         <div class="heroMetadata">United States</div>
       
     
@@ -271,8 +274,6 @@
     
       
         <div class="heroMetadata">2017</div>
-      
-    
       
     
   </div>
@@ -803,17 +804,6 @@
   
   
     
-      
-    
-  
-  
-
-  
-  
-  
-  
-  
-    
   
   
     
@@ -838,11 +828,11 @@
   
   
     
+      
+    
   
     
   
-  
-    
   
 
   
@@ -851,6 +841,17 @@
   
   
     
+      
+    
+  
+    
+  
+  
+
+  
+  
+  
+  
   
     
   
@@ -873,8 +874,21 @@
   
     
   
+  
+
+  
+  
+  
+  
+  
     
   
+    
+  
+    
+  
+  
+    
   
 
   
@@ -902,40 +916,6 @@
     
   
     
-  
-    
-  
-    
-  
-  
-    
-  
-
-  
-  
-  
-  
-  
-    
-  
-    
-  
-    
-  
-    
-      
-    
-  
-    
-  
-  
-
-  
-  
-  
-  
-  
-    
       
     
   
@@ -943,18 +923,12 @@
   
     
   
-    
-  
-    
-  
   
 
   
   
   
   
-  
-    
   
     
   
@@ -983,8 +957,6 @@
   
     
   
-    
-  
   
 
   
@@ -999,30 +971,9 @@
     
   
     
-      
-    
-  
-    
-  
-  
-
-  
-  
-  
   
   
     
-  
-    
-      
-    
-  
-    
-  
-    
-  
-    
-  
   
 
   
@@ -1056,7 +1007,64 @@
     
   
     
+  
+    
       
+    
+  
+  
+
+  
+  
+  
+  
+  
+    
+  
+    
+  
+    
+      
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+  
+  
+  
+    
+  
+    
+  
+    
+      
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+  
+  
+  
+    
+      
+    
+  
+    
+  
+    
+  
     
   
     
@@ -1092,30 +1100,11 @@
     
   
     
-  
-    
       
     
   
     
   
-  
-
-  
-  
-  
-  
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-      
     
   
   
@@ -1225,28 +1214,28 @@
         
       <div class="subFeaturedFilmComp">
             <div>
-                  <a href="/films/gaucho-gaucho">
-                        <img src="https://cdn.sanity.io/images/6jpkko0l/production/5084db8aa845d0d99ad2e2f9ef02ca288af45dcc-854x1274.png" alt="Gaucho Gaucho poster">
+                  <a href="/films/the-ghost-fleet">
+                        <img src="https://cdn.sanity.io/images/6jpkko0l/production/109f733d6a528810fca853cf62a6ee007d9a25d1-1000x1464.jpg" alt="The Ghost Fleet poster">
                   </a>
             </div>
             <div class="subFeaturedFilmCompBottomHalf" >
                   <div>
                         <div class="mediaType">
-                              2024
+                              2018
                         </div>
                         <div class="vertGap0"></div>
                         <div class="serifSubtitle">
-                              Gaucho Gaucho
+                              The Ghost Fleet
                         </div>
                         <div class="vertGap0"></div>
                         <div class="bodyCopySmaller">
-                              The documentary film GAUCHO GAUCHO introduces the world to a group of legendary gauchos (or South American cowboys) who live apart from modern society. The film weaves together tales of gauchos confronting the fragility of their existence in the face of unprecedented change.
+                              Ghost Fleet follows a small clad of activists who risk their lives on remote Indonesian islands, fighting to grant freedom to the enslaved fishermen who meet the world’s insatiable appetite for seafood.
                         </div>
                         <div class="vertGap0"></div>
                   </div>
                   <div class="vertGap0"></div>
                   <button class="ctaButton ">
-                        <a href="/films/gaucho-gaucho" >
+                        <a href="/films/the-ghost-fleet" >
                         LEARN MORE
                   </a>
                   </button>

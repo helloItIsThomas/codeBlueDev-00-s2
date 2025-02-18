@@ -26,22 +26,22 @@ layout: layouts/base.njk
 
   document.addEventListener("DOMContentLoaded", async () => {
     initAwardTicker(awardsTickerContainer, awardsTicker);
+
     const pageLoadingScreen = document.getElementById("pageLoadingScreen");
 
-    window.scrollTo({
-      top: 0, // Replace with your desired vertical scroll position
-      behavior: "instant"
-    });
-    // pageLoadingScreen.style.display = "none";
     pageLoadingScreen.style.display = "block";
     document.body.style.overflow = "hidden";
     sv
       .lenis
       .stop();
-    window.scrollTo({
-      top: 0, // Replace with your desired vertical scroll position
-      behavior: "instant"
-    });
+
+    window.scrollTo(0, 0);
+    setTimeout(function () {
+      var scrollPos = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+      if (scrollPos < 1) {
+        window.scrollTo(0, 1);
+      }
+    }, 0);
 
     gsap.to(pageLoadingScreen, {
       opacity: 0,

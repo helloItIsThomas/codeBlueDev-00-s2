@@ -11,34 +11,41 @@ title: "Code Blue"
 {# <script type="module" src="/js/tideSketch.js"></script> #}
 
 <script type="module">
-    const video = document.getElementById("bgVideoSplash");
-    document.addEventListener("DOMContentLoaded", () => {
-        setTimeout(() => {
-            video.play();
-        }, 1000); // Video will start playing after 3 seconds
-    });
+  const video = document.getElementById("bgVideoSplash");
+  document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(function () {
+      var scrollPos = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+      if (scrollPos < 1) {
+        window.scrollTo(0, 1);
+      }
+    }, 0);
+
+    setTimeout(() => {
+      video.play();
+    }, 1000); // Video will start playing after 3 seconds
+  });
 </script>
 
 <div class="centered" id="splash">
-    <div class="background" id="splashVideo">
-        <div>
-            <video class="bgVideo" id="bgVideoSplash" src="{{ someData.home[0].splashVideo | url }}" muted loop playsinline></video>
-        </div>
+  <div class="background" id="splashVideo">
+    <div>
+      <video class="bgVideo" id="bgVideoSplash" src="{{ someData.home[0].splashVideo | url }}" muted loop playsinline></video>
     </div>
-    <div id="splashForeground"></div>
-    <div id="loadingScreen"></div>
-    <div class="h1_0" id="splashSVG">
-        <canvas id="lottieCanvas"></canvas>
-    </div>
-    <div class="arrowCTA navTitle" id="splashCTA">
+  </div>
+  <div id="splashForeground"></div>
+  <div id="loadingScreen"></div>
+  <div class="h1_0" id="splashSVG">
+    <canvas class="lottieCanvas"></canvas>
+  </div>
+  <div class="arrowCTA navTitle" id="splashCTA">
             EXPLORE
             <div id="downArrow">
-            <svg width="15" height="9" viewBox="0 0 15 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M1 1L7.5 7.5L14 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-        </div>
+      <svg width="15" height="9" viewBox="0 0 15 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 1L7.5 7.5L14 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
     </div>
-    {# <div id="splashCallOut" class="bm0">THESE DOTS REFLECT THE REAL-TIME SEA <br> LEVEL AT A NOAA STATION CLOSEST TO YOU, <br> A VISUAL REMINDER OF EVER-RISING SEA LEVELS.</div> #}
+  </div>
+  {# <div id="splashCallOut" class="bm0">THESE DOTS REFLECT THE REAL-TIME SEA <br> LEVEL AT A NOAA STATION CLOSEST TO YOU, <br> A VISUAL REMINDER OF EVER-RISING SEA LEVELS.</div> #}
 </div>
 
 {% include "components/homeSections/purpose.njk" %}
@@ -46,36 +53,36 @@ title: "Code Blue"
 {% include "components/homeSections/mission.njk" %}
 
 <div id="subBody">
-    <div class="componentContainer margin0LR">
-        <div class="vertGap2"></div>
-        <div class="twoColGrid">
-            <div class="serifSubtitle padding1LRLeft">FEATURED<br>FILM</div>
-
-            <div class="bodyCopyBigger padding1LR mobileOnlyBlock">
-                <div class="mobileOnlyBlock">
-                    {% include "components/homeSections/featuredFilm_mobile.njk" %}
-                </div>
-                {{smartTextBox("The deep ocean is the largest living space on Earth. It harbors millions of undiscovered species and stores 80% of the carbon on Earth—and it is under siege by pro-mining nations that want to exploit it  for precious metals. Deep Rising, a new film narrated by Jason Momoa, exposes the corruption of those racing to mine this fragile ecosystem and follows the passionate activists, scientists, and politicians fighting to protect our planet's final frontier. \n \n We can still stop the destruction of our planet's last pristine wilderness. The seabed is humanity’s birthright, not a resource for the profit of just a few. Join the world's largest ocean dispute now.")}}</div>
-
-            <div class="bodyCopyBigger padding1LR desktopOnlyBlock">{{"The deep ocean is the largest living space on Earth. It harbors millions of undiscovered species and stores 80% of the carbon on Earth—and it is under siege by pro-mining nations that want to exploit it  for precious metals. Deep Rising, a new film narrated by Jason Momoa, exposes the corruption of those racing to mine this fragile ecosystem and follows the passionate activists, scientists, and politicians fighting to protect our planet's final frontier. \n \n We can still stop the destruction of our planet's last pristine wilderness. The seabed is humanity’s birthright, not a resource for the profit of just a few. Join the world's largest ocean dispute now."}}</div>
-        </div>
-        <div class="serifSubtitle_spaceBelow"></div>
-        <div class="desktopOnlyBlock">
-            {% include "components/homeSections/featuredFilm.njk" %}
-        </div>
-    </div>
-    <div class="vSpacer2"></div>
-    <div class="componentContainer margin0LR">
-        <div class="serifSubtitle margin0LR mobileOnlyBlock"> FEATURED PARTNERSHIP</div>
-        <div class="serifSubtitle centered desktopOnlyFlex"> FEATURED PARTNERSHIP</div>
-        <div class="serifSubtitle_spaceBelow"></div>
-        <div class="mobileOnlyBlock margin0LR">
-            {% include "components/homeSections/featuredPartnerships_mobile.njk" %}
-        </div>
-        <div class="desktopOnlyBlock">
-            {% include "components/homeSections/featuredPartnerships.njk" %}
-        </div>
-    </div>
+  <div class="componentContainer margin0LR">
     <div class="vertGap2"></div>
-    {% include "components/indexLoadingScreen.njk" %}
+    <div class="twoColGrid">
+      <div class="serifSubtitle padding1LRLeft">FEATURED<br>FILM</div>
+
+      <div class="bodyCopyBigger padding1LR mobileOnlyBlock">
+        <div class="mobileOnlyBlock">
+          {% include "components/homeSections/featuredFilm_mobile.njk" %}
+        </div>
+        {{smartTextBox("The deep ocean is the largest living space on Earth. It harbors millions of undiscovered species and stores 80% of the carbon on Earth—and it is under siege by pro-mining nations that want to exploit it  for precious metals. Deep Rising, a new film narrated by Jason Momoa, exposes the corruption of those racing to mine this fragile ecosystem and follows the passionate activists, scientists, and politicians fighting to protect our planet's final frontier. \n \n We can still stop the destruction of our planet's last pristine wilderness. The seabed is humanity’s birthright, not a resource for the profit of just a few. Join the world's largest ocean dispute now.")}}</div>
+
+      <div class="bodyCopyBigger padding1LR desktopOnlyBlock">{{"The deep ocean is the largest living space on Earth. It harbors millions of undiscovered species and stores 80% of the carbon on Earth—and it is under siege by pro-mining nations that want to exploit it  for precious metals. Deep Rising, a new film narrated by Jason Momoa, exposes the corruption of those racing to mine this fragile ecosystem and follows the passionate activists, scientists, and politicians fighting to protect our planet's final frontier. \n \n We can still stop the destruction of our planet's last pristine wilderness. The seabed is humanity’s birthright, not a resource for the profit of just a few. Join the world's largest ocean dispute now."}}</div>
+    </div>
+    <div class="serifSubtitle_spaceBelow"></div>
+    <div class="desktopOnlyBlock">
+      {% include "components/homeSections/featuredFilm.njk" %}
+    </div>
+  </div>
+  <div class="vSpacer2"></div>
+  <div class="componentContainer margin0LR">
+    <div class="serifSubtitle margin0LR mobileOnlyBlock"> FEATURED PARTNERSHIP</div>
+    <div class="serifSubtitle centered desktopOnlyFlex"> FEATURED PARTNERSHIP</div>
+    <div class="serifSubtitle_spaceBelow"></div>
+    <div class="mobileOnlyBlock margin0LR">
+      {% include "components/homeSections/featuredPartnerships_mobile.njk" %}
+    </div>
+    <div class="desktopOnlyBlock">
+      {% include "components/homeSections/featuredPartnerships.njk" %}
+    </div>
+  </div>
+  <div class="vertGap2"></div>
+  {% include "components/indexLoadingScreen.njk" %}
 </div>

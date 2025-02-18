@@ -68,7 +68,7 @@ function unlockSplash() {
 
 function splashTextToggle() {
   const text = document.getElementById("splashStatement");
-  const logoCanvas = document.getElementById("lottieCanvas");
+  const logoCanvas = document.querySelector(".lottieCanvas");
   const splashCTA = document.getElementById("splashCTA");
   gsap.to(logoCanvas, {
     opacity: 0,

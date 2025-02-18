@@ -319,7 +319,7 @@ function simulateLoadingProgress(element, target, start, callback) {
     } else {
       element.textContent = `${current}%`;
       // Random delay between 175ms to 875ms (75% slower than 100ms to 500ms)
-      const delay = Math.floor(Math.random() * 700) + 175;
+      const delay = Math.floor(Math.random() * 910) + 227;
       setTimeout(updateProgress, delay);
     }
   }

@@ -148,8 +148,8 @@
     padding-right: var(--padding1LRRight) !important;
   }
 
-  #lottieCanvas {
-    transform: scale(0.5) !important;
+  .lottieCanvas {
+    transform: scale(0.6) !important;
   }
 }
 /* end of media query */

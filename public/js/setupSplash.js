@@ -29,7 +29,7 @@ export async function setupSplash() {
   const logoLottie = new DotLottie({
     autoplay: false,
     loop: false,
-    canvas: document.getElementById("lottieCanvas"),
+    canvas: document.querySelector(".lottieCanvas"),
     src: "/assets/lottie/logo.lottie",
   });
   await new Promise((resolve) => {

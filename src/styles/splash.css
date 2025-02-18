@@ -33,10 +33,16 @@
 
 #splashSVG {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  left: 0%;
+  top: 0%;
+  width: 100%;
+  height: 100%;
   z-index: 2;
+
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  justify-content: center;
 }
 
 #splashCTA {
@@ -143,14 +149,14 @@
   color: white;
 }
 
-#lottieCanvas {
-  transform: scale(0.9);
+.lottieCanvas {
+  transform: scale(1.1);
 }
 
 #splashVideo {
   width: 100%;
   height: 100%;
-  background-image: url("http://codebluefoundation.org/wp-content/themes/code_blue/_video/video.jpg");
+  background-image: url("/assets/images/codeBlueSplashFallback.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

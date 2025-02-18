@@ -1,16 +1,7 @@
 
-Also get the autoplay video to work on the splash page, follow how we did it from the Our Mission Bit
+___
+S2
+___
 
-Add a fallback in case low power mode is on or some other thing is preventing autoplay
-https://stackoverflow.com/questions/46670150/low-power-mode-detection-in-javascript-for-ios11
 
-More of the cursor guys.
-
-Make the buttons float to the bottom of the section.
-
-For the our mission bit on mobile, 
-Treat it like the featured film bit.
-
-Get rid of the contact button for the Our Mission bit for desktop and mobile.
-
-For the orb, slide the loading time scale up so its low end 3.5 seconds high end 4.5 seconds.
+Fix the bug where the screen locks in the wrong place on mobile refresh
