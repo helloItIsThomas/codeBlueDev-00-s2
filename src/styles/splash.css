@@ -205,4 +205,5 @@
 .percentLoadedFont {
   font-family: "cdmono-regular";
   font-size: 48px;
+  border-bottom: 1px solid white;
 }
