@@ -49,10 +49,9 @@ title: "Conservation Grantees"
 
 <div class="vSpacer1"></div>
 
-{%- for grantee in someData.grantees -%}
+{%- for grantee in someData.grantees | reverse -%}
   <div class="margin0LR">
     <div class="margin1LR">
-      {# <div class="vSpacer1"></div> #}
       <div class=""></div>
       <hr>
       <div class="threeSevenGrid">
