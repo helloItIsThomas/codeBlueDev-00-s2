@@ -1,0 +1,166 @@
+.navBar {
+  box-sizing: border-box;
+  width: calc(100% - (var(--margin0LR) * 2));
+  height: 100px;
+  position: fixed;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+
+  padding-left: var(--margin0);
+  padding-right: var(--margin0);
+  padding-top: calc(var(--margin0) / 2);
+  padding-bottom: calc(var(--margin0) / 2);
+
+  top: 0;
+  z-index: 10;
+
+  /* pointer-events: none; */
+}
+
+#burgerIcon {
+  display: block;
+}
+
+#burgerWavyIcon {
+  display: none;
+}
+
+.navBar img {
+  height: 2rem;
+  width: auto;
+}
+
+.navBar * {
+  pointer-events: auto;
+  gap: 1rem;
+}
+
+.navLinks {
+  font-family: "cdmono-semiBold";
+  font-size: var(--navTitle);
+  display: flex;
+  flex-direction: row;
+}
+
+.navLinks a span {
+  color: white;
+  opacity: 0.4;
+}
+.navLinks a {
+  color: white;
+  opacity: 0.9;
+}
+
+li {
+  list-style-type: none;
+}
+
+li a {
+  text-decoration: none;
+}
+
+img {
+  transition: transform 0.6s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+a img:hover {
+  transform: scale(0.95);
+  transition: transform 0.15s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+a {
+  /* overflow: hidden; */
+  position: relative;
+  display: inline-block;
+}
+
+a::before,
+a::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  left: 0;
+}
+a::before {
+  background-color: #54b3d6;
+  height: 2px;
+  bottom: 0;
+  transform-origin: 100% 50%;
+  transform: scaleX(0);
+  transition: transform 0.3s cubic-bezier(0.76, 0, 0.24, 1);
+}
+a::after {
+  height: 100%;
+  top: 0;
+  transform-origin: 100% 50%;
+  transform: translate3d(0, 100%, 0);
+  transition: transform 0.3s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+a:hover::before {
+  transform-origin: 0% 50%;
+  transform: scaleX(1);
+}
+a:hover::after {
+  transform: translate3d(0, 0, 0);
+}
+
+a span {
+  display: inline-block;
+  transition: transform 0.3s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.navLogo a::before,
+.navLogo a::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  left: 0;
+}
+.navLogo a::before {
+  display: none;
+}
+.navLogo a::after {
+  display: none;
+}
+.navLogo a:hover::before {
+  transform-origin: 0% 50%;
+  transform: scaleX(1);
+}
+.navLogo a:hover::after {
+  transform: translate3d(0, 0, 0);
+}
+
+#mobileMenu {
+  background-image: url("/assets/images/marineSnow.png");
+  background-size: cover;
+  background-position: center;
+  /* position: absolute; */
+  display: none;
+  position: fixed;
+  /* display: flex; */
+  flex-direction: column;
+  z-index: 8;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #040b21;
+}
+
+.mobileMenuChild {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+#mobileMenuChild0 {
+  flex-grow: 3;
+}
+
+#mobileMenuChild1 {
+  flex-grow: 2;
+}

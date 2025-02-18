@@ -202,3 +202,8 @@
   mix-blend-mode: screen;
   opacity: 0;
 }
+
+.percentLoadedFont {
+  font-family: "cdserif";
+  font-size: var(--serifSubtitle);
+}

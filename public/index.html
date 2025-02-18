@@ -104,6 +104,13 @@
 <script type="module">
   const video = document.getElementById("bgVideoSplash");
   document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(function () {
+      var scrollPos = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+      if (scrollPos < 1) {
+        window.scrollTo(0, 1);
+      }
+    }, 0);
+
     setTimeout(() => {
       video.play();
     }, 1000); // Video will start playing after 3 seconds

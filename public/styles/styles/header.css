@@ -1,0 +1,57 @@
+.desktopHeaderHero {
+  box-sizing: border-box;
+  /* width: calc(100% - (var(--margin0LR) * 2));   */
+  position: relative;
+  height: 100%;
+  padding-top: 13em;
+  background-position: top;
+  background-size: cover;
+}
+
+.mobileHeaderHero {
+  box-sizing: border-box;
+  /* width: calc(100% - (var(--margin0LR) * 2));   */
+  position: relative;
+  height: 100%;
+  padding-top: 13em;
+  background-position: top center;
+  background-size: cover;
+}
+
+.headerText {
+  z-index: 2;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+  padding-bottom: 1rem; /* Optional: Add some padding at the bottom */
+}
+
+.desktopHeaderHeroImg {
+  box-sizing: border-box;
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  margin: 0;
+  padding: 0;
+
+  background-repeat: no-repeat;
+
+  background-position: top;
+  background-size: contain;
+}
+
+.headerDescription {
+  position: relative;
+}
+
+.headerTop {
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  justify-content: bottom;
+}
