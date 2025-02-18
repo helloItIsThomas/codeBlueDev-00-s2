@@ -35,7 +35,8 @@ title: "Code Blue"
   <div id="splashForeground"></div>
   <div id="loadingScreen"></div>
   <div class="h1_0" id="splashSVG">
-    <canvas class="lottieCanvas"></canvas>
+    {# <canvas class="lottieCanvas" style="transform: scale(1.0);"></canvas> #}
+    <canvas class="lottieCanvas" ></canvas>
   </div>
   <div class="arrowCTA navTitle" id="splashCTA">
             EXPLORE
@@ -48,8 +49,9 @@ title: "Code Blue"
   {# <div id="splashCallOut" class="bm0">THESE DOTS REFLECT THE REAL-TIME SEA <br> LEVEL AT A NOAA STATION CLOSEST TO YOU, <br> A VISUAL REMINDER OF EVER-RISING SEA LEVELS.</div> #}
 </div>
 
+<div class="vSpacer2"></div>
 {% include "components/homeSections/purpose.njk" %}
-
+<div class="vSpacer2"></div>
 {% include "components/homeSections/mission.njk" %}
 
 <div id="subBody">

@@ -149,7 +149,11 @@
   }
 
   .lottieCanvas {
-    transform: scale(0.6) !important;
+    border: 2px solid blue;
+    max-width: 100%;
+    max-height: 100%;
+    padding-left: 0%;
+    padding-right: 0%;
   }
 
   .spinCTASplash {

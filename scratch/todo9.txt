@@ -6,16 +6,15 @@ S1 cursor is better than S2
 They should be moving much more subtle, like barely moving.
 They should try to avoid the cursor, the cursor is disturbing them.They should last longer too, 2x as long.
 
-Add an image behind Protection and Restoration section.
-
 The impact section is just a continuation of the film description.
 
 Put the orb underneath shari’s bio on s2 as well
 Size down by 10%
 Padding ~ 50% more
 
-Add another breakpoint for the logo for tablet. 15%,
-Also it’s too big overall for all screens, 15%
+Home CMS
+
+
+_-_-_- VERIFY -_-_-_
 
 Try to get blue planet to stay on the same line.
-

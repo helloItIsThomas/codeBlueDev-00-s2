@@ -138,3 +138,12 @@
   font-family: "cdsans";
   font-size: var(--footerCopyright);
 }
+
+.noBreak {
+  white-space: nowrap;
+}
+
+.wordBreak {
+  word-break: break-word;
+  white-space: pre-line;
+}
