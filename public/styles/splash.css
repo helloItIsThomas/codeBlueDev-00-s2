@@ -204,6 +204,6 @@
 }
 
 .percentLoadedFont {
-  font-family: "cdserif";
+  font-family: "cdmono-regular";
   font-size: var(--serifSubtitle);
 }
