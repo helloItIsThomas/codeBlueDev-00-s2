@@ -12,9 +12,6 @@ Remove the dead fish scene from the clip.
 
 The impact section is just a continuation of the film description.
 
-For grantees, have the Latest go the bottom so mission blue is always on top.
-Also make the logos automatically white.
-
 For the story page, for mobile, the description text should be the same size as the bio.
 
 Put the orb underneath shari’s bio on s2 as well
