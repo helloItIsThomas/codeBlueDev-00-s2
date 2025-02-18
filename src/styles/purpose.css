@@ -5,7 +5,7 @@
   justify-content: center;
   width: auto;
   /* background-image: url("/assets/images/whales.png"); */
-  background: linear-gradient(rgb(3, 11, 34, 0.3), #030b22),
+  background: linear-gradient(rgb(3, 11, 34, 0), #030b22),
     url("/assets/images/rightWhales.jpg");
   background-size: cover;
   background-position: center;
