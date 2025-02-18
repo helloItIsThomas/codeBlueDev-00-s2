@@ -12309,4 +12309,2198 @@ FeatureQuery.prototype.getDefaultScriptFeaturesIndexes = function () {
 };
 
 /**
- * Get feature indexes
+ * Get feature indexes of a specific script
+ * @param {string} scriptTag script tag
+ */
+FeatureQuery.prototype.getScriptFeaturesIndexes = function(scriptTag) {
+    var tables = this.font.tables;
+    if (!tables.gsub) { return []; }
+    if (!scriptTag) { return this.getDefaultScriptFeaturesIndexes(); }
+    var scripts = this.font.tables.gsub.scripts;
+    for (var i = 0; i < scripts.length; i++) {
+        var script = scripts[i];
+        if (script.tag === scriptTag && script.script.defaultLangSys) {
+            return script.script.defaultLangSys.featureIndexes;
+        } else {
+            var langSysRecords = script.langSysRecords;
+            if (!!langSysRecords) {
+                for (var j = 0; j < langSysRecords.length; j++) {
+                    var langSysRecord = langSysRecords[j];
+                    if (langSysRecord.tag === scriptTag) {
+                        var langSys = langSysRecord.langSys;
+                        return langSys.featureIndexes;
+                    }
+                }
+            }
+        }
+    }
+    return this.getDefaultScriptFeaturesIndexes();
+};
+
+/**
+ * Map a feature tag to a gsub feature
+ * @param {any} features gsub features
+ * @param {string} scriptTag script tag
+ */
+FeatureQuery.prototype.mapTagsToFeatures = function (features, scriptTag) {
+    var tags = {};
+    for (var i = 0; i < features.length; i++) {
+        var tag = features[i].tag;
+        var feature = features[i].feature;
+        tags[tag] = feature;
+    }
+    this.features[scriptTag].tags = tags;
+};
+
+/**
+ * Get features of a specific script
+ * @param {string} scriptTag script tag
+ */
+FeatureQuery.prototype.getScriptFeatures = function (scriptTag) {
+    var features = this.features[scriptTag];
+    if (this.features.hasOwnProperty(scriptTag)) { return features; }
+    var featuresIndexes = this.getScriptFeaturesIndexes(scriptTag);
+    if (!featuresIndexes) { return null; }
+    var gsub = this.font.tables.gsub;
+    features = featuresIndexes.map(function (index) { return gsub.features[index]; });
+    this.features[scriptTag] = features;
+    this.mapTagsToFeatures(features, scriptTag);
+    return features;
+};
+
+/**
+ * Get substitution type
+ * @param {any} lookupTable lookup table
+ * @param {any} subtable subtable
+ */
+FeatureQuery.prototype.getSubstitutionType = function(lookupTable, subtable) {
+    var lookupType = lookupTable.lookupType.toString();
+    var substFormat = subtable.substFormat.toString();
+    return lookupType + substFormat;
+};
+
+/**
+ * Get lookup method
+ * @param {any} lookupTable lookup table
+ * @param {any} subtable subtable
+ */
+FeatureQuery.prototype.getLookupMethod = function(lookupTable, subtable) {
+    var this$1 = this;
+
+    var substitutionType = this.getSubstitutionType(lookupTable, subtable);
+    switch (substitutionType) {
+        case '11':
+            return function (glyphIndex) { return singleSubstitutionFormat1.apply(
+                this$1, [glyphIndex, subtable]
+            ); };
+        case '12':
+            return function (glyphIndex) { return singleSubstitutionFormat2.apply(
+                this$1, [glyphIndex, subtable]
+            ); };
+        case '63':
+            return function (contextParams) { return chainingSubstitutionFormat3.apply(
+                this$1, [contextParams, subtable]
+            ); };
+        case '41':
+            return function (contextParams) { return ligatureSubstitutionFormat1.apply(
+                this$1, [contextParams, subtable]
+            ); };
+        case '21':
+            return function (glyphIndex) { return decompositionSubstitutionFormat1.apply(
+                this$1, [glyphIndex, subtable]
+            ); };
+        default:
+            throw new Error(
+                "lookupType: " + (lookupTable.lookupType) + " - " +
+                "substFormat: " + (subtable.substFormat) + " " +
+                "is not yet supported"
+            );
+    }
+};
+
+/**
+ * [ LOOKUP TYPES ]
+ * -------------------------------
+ * Single                        1;
+ * Multiple                      2;
+ * Alternate                     3;
+ * Ligature                      4;
+ * Context                       5;
+ * ChainingContext               6;
+ * ExtensionSubstitution         7;
+ * ReverseChainingContext        8;
+ * -------------------------------
+ *
+ */
+
+/**
+ * @typedef FQuery
+ * @type Object
+ * @param {string} tag feature tag
+ * @param {string} script feature script
+ * @param {ContextParams} contextParams context params
+ */
+
+/**
+ * Lookup a feature using a query parameters
+ * @param {FQuery} query feature query
+ */
+FeatureQuery.prototype.lookupFeature = function (query) {
+    var contextParams = query.contextParams;
+    var currentIndex = contextParams.index;
+    var feature = this.getFeature({
+        tag: query.tag, script: query.script
+    });
+    if (!feature) { return new Error(
+        "font '" + (this.font.names.fullName.en) + "' " +
+        "doesn't support feature '" + (query.tag) + "' " +
+        "for script '" + (query.script) + "'."
+    ); }
+    var lookups = this.getFeatureLookups(feature);
+    var substitutions = [].concat(contextParams.context);
+    for (var l = 0; l < lookups.length; l++) {
+        var lookupTable = lookups[l];
+        var subtables = this.getLookupSubtables(lookupTable);
+        for (var s = 0; s < subtables.length; s++) {
+            var subtable = subtables[s];
+            var substType = this.getSubstitutionType(lookupTable, subtable);
+            var lookup = this.getLookupMethod(lookupTable, subtable);
+            var substitution = (void 0);
+            switch (substType) {
+                case '11':
+                    substitution = lookup(contextParams.current);
+                    if (substitution) {
+                        substitutions.splice(currentIndex, 1, new SubstitutionAction({
+                            id: 11, tag: query.tag, substitution: substitution
+                        }));
+                    }
+                    break;
+                case '12':
+                    substitution = lookup(contextParams.current);
+                    if (substitution) {
+                        substitutions.splice(currentIndex, 1, new SubstitutionAction({
+                            id: 12, tag: query.tag, substitution: substitution
+                        }));
+                    }
+                    break;
+                case '63':
+                    substitution = lookup(contextParams);
+                    if (Array.isArray(substitution) && substitution.length) {
+                        substitutions.splice(currentIndex, 1, new SubstitutionAction({
+                            id: 63, tag: query.tag, substitution: substitution
+                        }));
+                    }
+                    break;
+                case '41':
+                    substitution = lookup(contextParams);
+                    if (substitution) {
+                        substitutions.splice(currentIndex, 1, new SubstitutionAction({
+                            id: 41, tag: query.tag, substitution: substitution
+                        }));
+                    }
+                    break;
+                case '21':
+                    substitution = lookup(contextParams.current);
+                    if (substitution) {
+                        substitutions.splice(currentIndex, 1, new SubstitutionAction({
+                            id: 21, tag: query.tag, substitution: substitution
+                        }));
+                    }
+                    break;
+            }
+            contextParams = new ContextParams(substitutions, currentIndex);
+            if (Array.isArray(substitution) && !substitution.length) { continue; }
+            substitution = null;
+        }
+    }
+    return substitutions.length ? substitutions : null;
+};
+
+/**
+ * Checks if a font supports a specific features
+ * @param {FQuery} query feature query object
+ */
+FeatureQuery.prototype.supports = function (query) {
+    if (!query.script) { return false; }
+    this.getScriptFeatures(query.script);
+    var supportedScript = this.features.hasOwnProperty(query.script);
+    if (!query.tag) { return supportedScript; }
+    var supportedFeature = (
+        this.features[query.script].some(function (feature) { return feature.tag === query.tag; })
+    );
+    return supportedScript && supportedFeature;
+};
+
+/**
+ * Get lookup table subtables
+ * @param {any} lookupTable lookup table
+ */
+FeatureQuery.prototype.getLookupSubtables = function (lookupTable) {
+    return lookupTable.subtables || null;
+};
+
+/**
+ * Get lookup table by index
+ * @param {number} index lookup table index
+ */
+FeatureQuery.prototype.getLookupByIndex = function (index) {
+    var lookups = this.font.tables.gsub.lookups;
+    return lookups[index] || null;
+};
+
+/**
+ * Get lookup tables for a feature
+ * @param {string} feature
+ */
+FeatureQuery.prototype.getFeatureLookups = function (feature) {
+    // TODO: memoize
+    return feature.lookupListIndexes.map(this.getLookupByIndex.bind(this));
+};
+
+/**
+ * Query a feature by it's properties
+ * @param {any} query an object that describes the properties of a query
+ */
+FeatureQuery.prototype.getFeature = function getFeature(query) {
+    if (!this.font) { return { FAIL: "No font was found"}; }
+    if (!this.features.hasOwnProperty(query.script)) {
+        this.getScriptFeatures(query.script);
+    }
+    var scriptFeatures = this.features[query.script];
+    if (!scriptFeatures) { return (
+        { FAIL: ("No feature for script " + (query.script))}
+    ); }
+    if (!scriptFeatures.tags[query.tag]) { return null; }
+    return this.features[query.script].tags[query.tag];
+};
+
+/**
+ * Arabic word context checkers
+ */
+
+function arabicWordStartCheck(contextParams) {
+    var char = contextParams.current;
+    var prevChar = contextParams.get(-1);
+    return (
+        // ? arabic first char
+        (prevChar === null && isArabicChar(char)) ||
+        // ? arabic char preceded with a non arabic char
+        (!isArabicChar(prevChar) && isArabicChar(char))
+    );
+}
+
+function arabicWordEndCheck(contextParams) {
+    var nextChar = contextParams.get(1);
+    return (
+        // ? last arabic char
+        (nextChar === null) ||
+        // ? next char is not arabic
+        (!isArabicChar(nextChar))
+    );
+}
+
+var arabicWordCheck = {
+    startCheck: arabicWordStartCheck,
+    endCheck: arabicWordEndCheck
+};
+
+/**
+ * Arabic sentence context checkers
+ */
+
+function arabicSentenceStartCheck(contextParams) {
+    var char = contextParams.current;
+    var prevChar = contextParams.get(-1);
+    return (
+        // ? an arabic char preceded with a non arabic char
+        (isArabicChar(char) || isTashkeelArabicChar(char)) &&
+        !isArabicChar(prevChar)
+    );
+}
+
+function arabicSentenceEndCheck(contextParams) {
+    var nextChar = contextParams.get(1);
+    switch (true) {
+        case nextChar === null:
+            return true;
+        case (!isArabicChar(nextChar) && !isTashkeelArabicChar(nextChar)):
+            var nextIsWhitespace = isWhiteSpace(nextChar);
+            if (!nextIsWhitespace) { return true; }
+            if (nextIsWhitespace) {
+                var arabicCharAhead = false;
+                arabicCharAhead = (
+                    contextParams.lookahead.some(
+                        function (c) { return isArabicChar(c) || isTashkeelArabicChar(c); }
+                    )
+                );
+                if (!arabicCharAhead) { return true; }
+            }
+            break;
+        default:
+            return false;
+    }
+}
+
+var arabicSentenceCheck = {
+    startCheck: arabicSentenceStartCheck,
+    endCheck: arabicSentenceEndCheck
+};
+
+/**
+ * Apply single substitution format 1
+ * @param {Array} substitutions substitutions
+ * @param {any} tokens a list of tokens
+ * @param {number} index token index
+ */
+function singleSubstitutionFormat1$1(action, tokens, index) {
+    tokens[index].setState(action.tag, action.substitution);
+}
+
+/**
+ * Apply single substitution format 2
+ * @param {Array} substitutions substitutions
+ * @param {any} tokens a list of tokens
+ * @param {number} index token index
+ */
+function singleSubstitutionFormat2$1(action, tokens, index) {
+    tokens[index].setState(action.tag, action.substitution);
+}
+
+/**
+ * Apply chaining context substitution format 3
+ * @param {Array} substitutions substitutions
+ * @param {any} tokens a list of tokens
+ * @param {number} index token index
+ */
+function chainingSubstitutionFormat3$1(action, tokens, index) {
+    action.substitution.forEach(function (subst, offset) {
+        var token = tokens[index + offset];
+        token.setState(action.tag, subst);
+    });
+}
+
+/**
+ * Apply ligature substitution format 1
+ * @param {Array} substitutions substitutions
+ * @param {any} tokens a list of tokens
+ * @param {number} index token index
+ */
+function ligatureSubstitutionFormat1$1(action, tokens, index) {
+    var token = tokens[index];
+    token.setState(action.tag, action.substitution.ligGlyph);
+    var compsCount = action.substitution.components.length;
+    for (var i = 0; i < compsCount; i++) {
+        token = tokens[index + i + 1];
+        token.setState('deleted', true);
+    }
+}
+
+/**
+ * Supported substitutions
+ */
+var SUBSTITUTIONS = {
+    11: singleSubstitutionFormat1$1,
+    12: singleSubstitutionFormat2$1,
+    63: chainingSubstitutionFormat3$1,
+    41: ligatureSubstitutionFormat1$1
+};
+
+/**
+ * Apply substitutions to a list of tokens
+ * @param {Array} substitutions substitutions
+ * @param {any} tokens a list of tokens
+ * @param {number} index token index
+ */
+function applySubstitution(action, tokens, index) {
+    if (action instanceof SubstitutionAction && SUBSTITUTIONS[action.id]) {
+        SUBSTITUTIONS[action.id](action, tokens, index);
+    }
+}
+
+/**
+ * Apply Arabic presentation forms to a range of tokens
+ */
+
+/**
+ * Check if a char can be connected to it's preceding char
+ * @param {ContextParams} charContextParams context params of a char
+ */
+function willConnectPrev(charContextParams) {
+    var backtrack = [].concat(charContextParams.backtrack);
+    for (var i = backtrack.length - 1; i >= 0; i--) {
+        var prevChar = backtrack[i];
+        var isolated = isIsolatedArabicChar(prevChar);
+        var tashkeel = isTashkeelArabicChar(prevChar);
+        if (!isolated && !tashkeel) { return true; }
+        if (isolated) { return false; }
+    }
+    return false;
+}
+
+/**
+ * Check if a char can be connected to it's proceeding char
+ * @param {ContextParams} charContextParams context params of a char
+ */
+function willConnectNext(charContextParams) {
+    if (isIsolatedArabicChar(charContextParams.current)) { return false; }
+    for (var i = 0; i < charContextParams.lookahead.length; i++) {
+        var nextChar = charContextParams.lookahead[i];
+        var tashkeel = isTashkeelArabicChar(nextChar);
+        if (!tashkeel) { return true; }
+    }
+    return false;
+}
+
+/**
+ * Apply arabic presentation forms to a list of tokens
+ * @param {ContextRange} range a range of tokens
+ */
+function arabicPresentationForms(range) {
+    var this$1 = this;
+
+    var script = 'arab';
+    var tags = this.featuresTags[script];
+    var tokens = this.tokenizer.getRangeTokens(range);
+    if (tokens.length === 1) { return; }
+    var contextParams = new ContextParams(
+        tokens.map(function (token) { return token.getState('glyphIndex'); }
+    ), 0);
+    var charContextParams = new ContextParams(
+        tokens.map(function (token) { return token.char; }
+    ), 0);
+    tokens.forEach(function (token, index) {
+        if (isTashkeelArabicChar(token.char)) { return; }
+        contextParams.setCurrentIndex(index);
+        charContextParams.setCurrentIndex(index);
+        var CONNECT = 0; // 2 bits 00 (10: can connect next) (01: can connect prev)
+        if (willConnectPrev(charContextParams)) { CONNECT |= 1; }
+        if (willConnectNext(charContextParams)) { CONNECT |= 2; }
+        var tag;
+        switch (CONNECT) {
+            case 1: (tag = 'fina'); break;
+            case 2: (tag = 'init'); break;
+            case 3: (tag = 'medi'); break;
+        }
+        if (tags.indexOf(tag) === -1) { return; }
+        var substitutions = this$1.query.lookupFeature({
+            tag: tag, script: script, contextParams: contextParams
+        });
+        if (substitutions instanceof Error) { return console.info(substitutions.message); }
+        substitutions.forEach(function (action, index) {
+            if (action instanceof SubstitutionAction) {
+                applySubstitution(action, tokens, index);
+                contextParams.context[index] = action.substitution;
+            }
+        });
+    });
+}
+
+/**
+ * Apply Arabic required ligatures feature to a range of tokens
+ */
+
+/**
+ * Update context params
+ * @param {any} tokens a list of tokens
+ * @param {number} index current item index
+ */
+function getContextParams(tokens, index) {
+    var context = tokens.map(function (token) { return token.activeState.value; });
+    return new ContextParams(context, index || 0);
+}
+
+/**
+ * Apply Arabic required ligatures to a context range
+ * @param {ContextRange} range a range of tokens
+ */
+function arabicRequiredLigatures(range) {
+    var this$1 = this;
+
+    var script = 'arab';
+    var tokens = this.tokenizer.getRangeTokens(range);
+    var contextParams = getContextParams(tokens);
+    contextParams.context.forEach(function (glyphIndex, index) {
+        contextParams.setCurrentIndex(index);
+        var substitutions = this$1.query.lookupFeature({
+            tag: 'rlig', script: script, contextParams: contextParams
+        });
+        if (substitutions.length) {
+            substitutions.forEach(
+                function (action) { return applySubstitution(action, tokens, index); }
+            );
+            contextParams = getContextParams(tokens);
+        }
+    });
+}
+
+/**
+ * Latin word context checkers
+ */
+
+function latinWordStartCheck(contextParams) {
+    var char = contextParams.current;
+    var prevChar = contextParams.get(-1);
+    return (
+        // ? latin first char
+        (prevChar === null && isLatinChar(char)) ||
+        // ? latin char preceded with a non latin char
+        (!isLatinChar(prevChar) && isLatinChar(char))
+    );
+}
+
+function latinWordEndCheck(contextParams) {
+    var nextChar = contextParams.get(1);
+    return (
+        // ? last latin char
+        (nextChar === null) ||
+        // ? next char is not latin
+        (!isLatinChar(nextChar))
+    );
+}
+
+var latinWordCheck = {
+    startCheck: latinWordStartCheck,
+    endCheck: latinWordEndCheck
+};
+
+/**
+ * Apply Latin ligature feature to a range of tokens
+ */
+
+/**
+ * Update context params
+ * @param {any} tokens a list of tokens
+ * @param {number} index current item index
+ */
+function getContextParams$1(tokens, index) {
+    var context = tokens.map(function (token) { return token.activeState.value; });
+    return new ContextParams(context, index || 0);
+}
+
+/**
+ * Apply Arabic required ligatures to a context range
+ * @param {ContextRange} range a range of tokens
+ */
+function latinLigature(range) {
+    var this$1 = this;
+
+    var script = 'latn';
+    var tokens = this.tokenizer.getRangeTokens(range);
+    var contextParams = getContextParams$1(tokens);
+    contextParams.context.forEach(function (glyphIndex, index) {
+        contextParams.setCurrentIndex(index);
+        var substitutions = this$1.query.lookupFeature({
+            tag: 'liga', script: script, contextParams: contextParams
+        });
+        if (substitutions.length) {
+            substitutions.forEach(
+                function (action) { return applySubstitution(action, tokens, index); }
+            );
+            contextParams = getContextParams$1(tokens);
+        }
+    });
+}
+
+/**
+ * Infer bidirectional properties for a given text and apply
+ * the corresponding layout rules.
+ */
+
+/**
+ * Create Bidi. features
+ * @param {string} baseDir text base direction. value either 'ltr' or 'rtl'
+ */
+function Bidi(baseDir) {
+    this.baseDir = baseDir || 'ltr';
+    this.tokenizer = new Tokenizer();
+    this.featuresTags = {};
+}
+
+/**
+ * Sets Bidi text
+ * @param {string} text a text input
+ */
+Bidi.prototype.setText = function (text) {
+    this.text = text;
+};
+
+/**
+ * Store essential context checks:
+ * arabic word check for applying gsub features
+ * arabic sentence check for adjusting arabic layout
+ */
+Bidi.prototype.contextChecks = ({
+    latinWordCheck: latinWordCheck,
+    arabicWordCheck: arabicWordCheck,
+    arabicSentenceCheck: arabicSentenceCheck
+});
+
+/**
+ * Register arabic word check
+ */
+function registerContextChecker(checkId) {
+    var check = this.contextChecks[(checkId + "Check")];
+    return this.tokenizer.registerContextChecker(
+        checkId, check.startCheck, check.endCheck
+    );
+}
+
+/**
+ * Perform pre tokenization procedure then
+ * tokenize text input
+ */
+function tokenizeText() {
+    registerContextChecker.call(this, 'latinWord');
+    registerContextChecker.call(this, 'arabicWord');
+    registerContextChecker.call(this, 'arabicSentence');
+    return this.tokenizer.tokenize(this.text);
+}
+
+/**
+ * Reverse arabic sentence layout
+ * TODO: check base dir before applying adjustments - priority low
+ */
+function reverseArabicSentences() {
+    var this$1 = this;
+
+    var ranges = this.tokenizer.getContextRanges('arabicSentence');
+    ranges.forEach(function (range) {
+        var rangeTokens = this$1.tokenizer.getRangeTokens(range);
+        this$1.tokenizer.replaceRange(
+            range.startIndex,
+            range.endOffset,
+            rangeTokens.reverse()
+        );
+    });
+}
+
+/**
+ * Register supported features tags
+ * @param {script} script script tag
+ * @param {Array} tags features tags list
+ */
+Bidi.prototype.registerFeatures = function (script, tags) {
+    var this$1 = this;
+
+    var supportedTags = tags.filter(
+        function (tag) { return this$1.query.supports({script: script, tag: tag}); }
+    );
+    if (!this.featuresTags.hasOwnProperty(script)) {
+        this.featuresTags[script] = supportedTags;
+    } else {
+        this.featuresTags[script] =
+        this.featuresTags[script].concat(supportedTags);
+    }
+};
+
+/**
+ * Apply GSUB features
+ * @param {Array} tagsList a list of features tags
+ * @param {string} script a script tag
+ * @param {Font} font opentype font instance
+ */
+Bidi.prototype.applyFeatures = function (font, features) {
+    if (!font) { throw new Error(
+        'No valid font was provided to apply features'
+    ); }
+    if (!this.query) { this.query = new FeatureQuery(font); }
+    for (var f = 0; f < features.length; f++) {
+        var feature = features[f];
+        if (!this.query.supports({script: feature.script})) { continue; }
+        this.registerFeatures(feature.script, feature.tags);
+    }
+};
+
+/**
+ * Register a state modifier
+ * @param {string} modifierId state modifier id
+ * @param {function} condition a predicate function that returns true or false
+ * @param {function} modifier a modifier function to set token state
+ */
+Bidi.prototype.registerModifier = function (modifierId, condition, modifier) {
+    this.tokenizer.registerModifier(modifierId, condition, modifier);
+};
+
+/**
+ * Check if 'glyphIndex' is registered
+ */
+function checkGlyphIndexStatus() {
+    if (this.tokenizer.registeredModifiers.indexOf('glyphIndex') === -1) {
+        throw new Error(
+            'glyphIndex modifier is required to apply ' +
+            'arabic presentation features.'
+        );
+    }
+}
+
+/**
+ * Apply arabic presentation forms features
+ */
+function applyArabicPresentationForms() {
+    var this$1 = this;
+
+    var script = 'arab';
+    if (!this.featuresTags.hasOwnProperty(script)) { return; }
+    checkGlyphIndexStatus.call(this);
+    var ranges = this.tokenizer.getContextRanges('arabicWord');
+    ranges.forEach(function (range) {
+        arabicPresentationForms.call(this$1, range);
+    });
+}
+
+/**
+ * Apply required arabic ligatures
+ */
+function applyArabicRequireLigatures() {
+    var this$1 = this;
+
+    var script = 'arab';
+    if (!this.featuresTags.hasOwnProperty(script)) { return; }
+    var tags = this.featuresTags[script];
+    if (tags.indexOf('rlig') === -1) { return; }
+    checkGlyphIndexStatus.call(this);
+    var ranges = this.tokenizer.getContextRanges('arabicWord');
+    ranges.forEach(function (range) {
+        arabicRequiredLigatures.call(this$1, range);
+    });
+}
+
+/**
+ * Apply required arabic ligatures
+ */
+function applyLatinLigatures() {
+    var this$1 = this;
+
+    var script = 'latn';
+    if (!this.featuresTags.hasOwnProperty(script)) { return; }
+    var tags = this.featuresTags[script];
+    if (tags.indexOf('liga') === -1) { return; }
+    checkGlyphIndexStatus.call(this);
+    var ranges = this.tokenizer.getContextRanges('latinWord');
+    ranges.forEach(function (range) {
+        latinLigature.call(this$1, range);
+    });
+}
+
+/**
+ * Check if a context is registered
+ * @param {string} contextId context id
+ */
+Bidi.prototype.checkContextReady = function (contextId) {
+    return !!this.tokenizer.getContext(contextId);
+};
+
+/**
+ * Apply features to registered contexts
+ */
+Bidi.prototype.applyFeaturesToContexts = function () {
+    if (this.checkContextReady('arabicWord')) {
+        applyArabicPresentationForms.call(this);
+        applyArabicRequireLigatures.call(this);
+    }
+    if (this.checkContextReady('latinWord')) {
+        applyLatinLigatures.call(this);
+    }
+    if (this.checkContextReady('arabicSentence')) {
+        reverseArabicSentences.call(this);
+    }
+};
+
+/**
+ * process text input
+ * @param {string} text an input text
+ */
+Bidi.prototype.processText = function(text) {
+    if (!this.text || this.text !== text) {
+        this.setText(text);
+        tokenizeText.call(this);
+        this.applyFeaturesToContexts();
+    }
+};
+
+/**
+ * Process a string of text to identify and adjust
+ * bidirectional text entities.
+ * @param {string} text input text
+ */
+Bidi.prototype.getBidiText = function (text) {
+    this.processText(text);
+    return this.tokenizer.getText();
+};
+
+/**
+ * Get the current state index of each token
+ * @param {text} text an input text
+ */
+Bidi.prototype.getTextGlyphs = function (text) {
+    this.processText(text);
+    var indexes = [];
+    for (var i = 0; i < this.tokenizer.tokens.length; i++) {
+        var token = this.tokenizer.tokens[i];
+        if (token.state.deleted) { continue; }
+        var index = token.activeState.value;
+        indexes.push(Array.isArray(index) ? index[0] : index);
+    }
+    return indexes;
+};
+
+// The Font object
+
+/**
+ * @typedef FontOptions
+ * @type Object
+ * @property {Boolean} empty - whether to create a new empty font
+ * @property {string} familyName
+ * @property {string} styleName
+ * @property {string=} fullName
+ * @property {string=} postScriptName
+ * @property {string=} designer
+ * @property {string=} designerURL
+ * @property {string=} manufacturer
+ * @property {string=} manufacturerURL
+ * @property {string=} license
+ * @property {string=} licenseURL
+ * @property {string=} version
+ * @property {string=} description
+ * @property {string=} copyright
+ * @property {string=} trademark
+ * @property {Number} unitsPerEm
+ * @property {Number} ascender
+ * @property {Number} descender
+ * @property {Number} createdTimestamp
+ * @property {string=} weightClass
+ * @property {string=} widthClass
+ * @property {string=} fsSelection
+ */
+
+/**
+ * A Font represents a loaded OpenType font file.
+ * It contains a set of glyphs and methods to draw text on a drawing context,
+ * or to get a path representing the text.
+ * @exports opentype.Font
+ * @class
+ * @param {FontOptions}
+ * @constructor
+ */
+function Font(options) {
+    options = options || {};
+    options.tables = options.tables || {};
+
+    if (!options.empty) {
+        // Check that we've provided the minimum set of names.
+        checkArgument(options.familyName, 'When creating a new Font object, familyName is required.');
+        checkArgument(options.styleName, 'When creating a new Font object, styleName is required.');
+        checkArgument(options.unitsPerEm, 'When creating a new Font object, unitsPerEm is required.');
+        checkArgument(options.ascender, 'When creating a new Font object, ascender is required.');
+        checkArgument(options.descender <= 0, 'When creating a new Font object, negative descender value is required.');
+
+        // OS X will complain if the names are empty, so we put a single space everywhere by default.
+        this.names = {
+            fontFamily: {en: options.familyName || ' '},
+            fontSubfamily: {en: options.styleName || ' '},
+            fullName: {en: options.fullName || options.familyName + ' ' + options.styleName},
+            // postScriptName may not contain any whitespace
+            postScriptName: {en: options.postScriptName || (options.familyName + options.styleName).replace(/\s/g, '')},
+            designer: {en: options.designer || ' '},
+            designerURL: {en: options.designerURL || ' '},
+            manufacturer: {en: options.manufacturer || ' '},
+            manufacturerURL: {en: options.manufacturerURL || ' '},
+            license: {en: options.license || ' '},
+            licenseURL: {en: options.licenseURL || ' '},
+            version: {en: options.version || 'Version 0.1'},
+            description: {en: options.description || ' '},
+            copyright: {en: options.copyright || ' '},
+            trademark: {en: options.trademark || ' '}
+        };
+        this.unitsPerEm = options.unitsPerEm || 1000;
+        this.ascender = options.ascender;
+        this.descender = options.descender;
+        this.createdTimestamp = options.createdTimestamp;
+        this.tables = Object.assign(options.tables, {
+            os2: Object.assign({
+                usWeightClass: options.weightClass || this.usWeightClasses.MEDIUM,
+                usWidthClass: options.widthClass || this.usWidthClasses.MEDIUM,
+                fsSelection: options.fsSelection || this.fsSelectionValues.REGULAR,
+            }, options.tables.os2)
+        });
+    }
+
+    this.supported = true; // Deprecated: parseBuffer will throw an error if font is not supported.
+    this.glyphs = new glyphset.GlyphSet(this, options.glyphs || []);
+    this.encoding = new DefaultEncoding(this);
+    this.position = new Position(this);
+    this.substitution = new Substitution(this);
+    this.tables = this.tables || {};
+
+    // needed for low memory mode only.
+    this._push = null;
+    this._hmtxTableData = {};
+
+    Object.defineProperty(this, 'hinting', {
+        get: function() {
+            if (this._hinting) { return this._hinting; }
+            if (this.outlinesFormat === 'truetype') {
+                return (this._hinting = new Hinting(this));
+            }
+        }
+    });
+}
+
+/**
+ * Check if the font has a glyph for the given character.
+ * @param  {string}
+ * @return {Boolean}
+ */
+Font.prototype.hasChar = function(c) {
+    return this.encoding.charToGlyphIndex(c) !== null;
+};
+
+/**
+ * Convert the given character to a single glyph index.
+ * Note that this function assumes that there is a one-to-one mapping between
+ * the given character and a glyph; for complex scripts this might not be the case.
+ * @param  {string}
+ * @return {Number}
+ */
+Font.prototype.charToGlyphIndex = function(s) {
+    return this.encoding.charToGlyphIndex(s);
+};
+
+/**
+ * Convert the given character to a single Glyph object.
+ * Note that this function assumes that there is a one-to-one mapping between
+ * the given character and a glyph; for complex scripts this might not be the case.
+ * @param  {string}
+ * @return {opentype.Glyph}
+ */
+Font.prototype.charToGlyph = function(c) {
+    var glyphIndex = this.charToGlyphIndex(c);
+    var glyph = this.glyphs.get(glyphIndex);
+    if (!glyph) {
+        // .notdef
+        glyph = this.glyphs.get(0);
+    }
+
+    return glyph;
+};
+
+/**
+ * Update features
+ * @param {any} options features options
+ */
+Font.prototype.updateFeatures = function (options) {
+    // TODO: update all features options not only 'latn'.
+    return this.defaultRenderOptions.features.map(function (feature) {
+        if (feature.script === 'latn') {
+            return {
+                script: 'latn',
+                tags: feature.tags.filter(function (tag) { return options[tag]; })
+            };
+        } else {
+            return feature;
+        }
+    });
+};
+
+/**
+ * Convert the given text to a list of Glyph objects.
+ * Note that there is no strict one-to-one mapping between characters and
+ * glyphs, so the list of returned glyphs can be larger or smaller than the
+ * length of the given string.
+ * @param  {string}
+ * @param  {GlyphRenderOptions} [options]
+ * @return {opentype.Glyph[]}
+ */
+Font.prototype.stringToGlyphs = function(s, options) {
+    var this$1 = this;
+
+
+    var bidi = new Bidi();
+
+    // Create and register 'glyphIndex' state modifier
+    var charToGlyphIndexMod = function (token) { return this$1.charToGlyphIndex(token.char); };
+    bidi.registerModifier('glyphIndex', null, charToGlyphIndexMod);
+
+    // roll-back to default features
+    var features = options ?
+    this.updateFeatures(options.features) :
+    this.defaultRenderOptions.features;
+
+    bidi.applyFeatures(this, features);
+
+    var indexes = bidi.getTextGlyphs(s);
+
+    var length = indexes.length;
+
+    // convert glyph indexes to glyph objects
+    var glyphs = new Array(length);
+    var notdef = this.glyphs.get(0);
+    for (var i = 0; i < length; i += 1) {
+        glyphs[i] = this.glyphs.get(indexes[i]) || notdef;
+    }
+    return glyphs;
+};
+
+/**
+ * @param  {string}
+ * @return {Number}
+ */
+Font.prototype.nameToGlyphIndex = function(name) {
+    return this.glyphNames.nameToGlyphIndex(name);
+};
+
+/**
+ * @param  {string}
+ * @return {opentype.Glyph}
+ */
+Font.prototype.nameToGlyph = function(name) {
+    var glyphIndex = this.nameToGlyphIndex(name);
+    var glyph = this.glyphs.get(glyphIndex);
+    if (!glyph) {
+        // .notdef
+        glyph = this.glyphs.get(0);
+    }
+
+    return glyph;
+};
+
+/**
+ * @param  {Number}
+ * @return {String}
+ */
+Font.prototype.glyphIndexToName = function(gid) {
+    if (!this.glyphNames.glyphIndexToName) {
+        return '';
+    }
+
+    return this.glyphNames.glyphIndexToName(gid);
+};
+
+/**
+ * Retrieve the value of the kerning pair between the left glyph (or its index)
+ * and the right glyph (or its index). If no kerning pair is found, return 0.
+ * The kerning value gets added to the advance width when calculating the spacing
+ * between glyphs.
+ * For GPOS kerning, this method uses the default script and language, which covers
+ * most use cases. To have greater control, use font.position.getKerningValue .
+ * @param  {opentype.Glyph} leftGlyph
+ * @param  {opentype.Glyph} rightGlyph
+ * @return {Number}
+ */
+Font.prototype.getKerningValue = function(leftGlyph, rightGlyph) {
+    leftGlyph = leftGlyph.index || leftGlyph;
+    rightGlyph = rightGlyph.index || rightGlyph;
+    var gposKerning = this.position.defaultKerningTables;
+    if (gposKerning) {
+        return this.position.getKerningValue(gposKerning, leftGlyph, rightGlyph);
+    }
+    // "kern" table
+    return this.kerningPairs[leftGlyph + ',' + rightGlyph] || 0;
+};
+
+/**
+ * @typedef GlyphRenderOptions
+ * @type Object
+ * @property {string} [script] - script used to determine which features to apply. By default, 'DFLT' or 'latn' is used.
+ *                               See https://www.microsoft.com/typography/otspec/scripttags.htm
+ * @property {string} [language='dflt'] - language system used to determine which features to apply.
+ *                                        See https://www.microsoft.com/typography/developers/opentype/languagetags.aspx
+ * @property {boolean} [kerning=true] - whether to include kerning values
+ * @property {object} [features] - OpenType Layout feature tags. Used to enable or disable the features of the given script/language system.
+ *                                 See https://www.microsoft.com/typography/otspec/featuretags.htm
+ */
+Font.prototype.defaultRenderOptions = {
+    kerning: true,
+    features: [
+        /**
+         * these 4 features are required to render Arabic text properly
+         * and shouldn't be turned off when rendering arabic text.
+         */
+        { script: 'arab', tags: ['init', 'medi', 'fina', 'rlig'] },
+        { script: 'latn', tags: ['liga', 'rlig'] }
+    ]
+};
+
+/**
+ * Helper function that invokes the given callback for each glyph in the given text.
+ * The callback gets `(glyph, x, y, fontSize, options)`.* @param  {string} text
+ * @param {string} text - The text to apply.
+ * @param  {number} [x=0] - Horizontal position of the beginning of the text.
+ * @param  {number} [y=0] - Vertical position of the *baseline* of the text.
+ * @param  {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
+ * @param  {GlyphRenderOptions=} options
+ * @param  {Function} callback
+ */
+Font.prototype.forEachGlyph = function(text, x, y, fontSize, options, callback) {
+    x = x !== undefined ? x : 0;
+    y = y !== undefined ? y : 0;
+    fontSize = fontSize !== undefined ? fontSize : 72;
+    options = Object.assign({}, this.defaultRenderOptions, options);
+    var fontScale = 1 / this.unitsPerEm * fontSize;
+    var glyphs = this.stringToGlyphs(text, options);
+    var kerningLookups;
+    if (options.kerning) {
+        var script = options.script || this.position.getDefaultScriptName();
+        kerningLookups = this.position.getKerningTables(script, options.language);
+    }
+    for (var i = 0; i < glyphs.length; i += 1) {
+        var glyph = glyphs[i];
+        callback.call(this, glyph, x, y, fontSize, options);
+        if (glyph.advanceWidth) {
+            x += glyph.advanceWidth * fontScale;
+        }
+
+        if (options.kerning && i < glyphs.length - 1) {
+            // We should apply position adjustment lookups in a more generic way.
+            // Here we only use the xAdvance value.
+            var kerningValue = kerningLookups ?
+                  this.position.getKerningValue(kerningLookups, glyph.index, glyphs[i + 1].index) :
+                  this.getKerningValue(glyph, glyphs[i + 1]);
+            x += kerningValue * fontScale;
+        }
+
+        if (options.letterSpacing) {
+            x += options.letterSpacing * fontSize;
+        } else if (options.tracking) {
+            x += (options.tracking / 1000) * fontSize;
+        }
+    }
+    return x;
+};
+
+/**
+ * Create a Path object that represents the given text.
+ * @param  {string} text - The text to create.
+ * @param  {number} [x=0] - Horizontal position of the beginning of the text.
+ * @param  {number} [y=0] - Vertical position of the *baseline* of the text.
+ * @param  {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
+ * @param  {GlyphRenderOptions=} options
+ * @return {opentype.Path}
+ */
+Font.prototype.getPath = function(text, x, y, fontSize, options) {
+    var fullPath = new Path();
+    this.forEachGlyph(text, x, y, fontSize, options, function(glyph, gX, gY, gFontSize) {
+        var glyphPath = glyph.getPath(gX, gY, gFontSize, options, this);
+        fullPath.extend(glyphPath);
+    });
+    return fullPath;
+};
+
+/**
+ * Create an array of Path objects that represent the glyphs of a given text.
+ * @param  {string} text - The text to create.
+ * @param  {number} [x=0] - Horizontal position of the beginning of the text.
+ * @param  {number} [y=0] - Vertical position of the *baseline* of the text.
+ * @param  {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
+ * @param  {GlyphRenderOptions=} options
+ * @return {opentype.Path[]}
+ */
+Font.prototype.getPaths = function(text, x, y, fontSize, options) {
+    var glyphPaths = [];
+    this.forEachGlyph(text, x, y, fontSize, options, function(glyph, gX, gY, gFontSize) {
+        var glyphPath = glyph.getPath(gX, gY, gFontSize, options, this);
+        glyphPaths.push(glyphPath);
+    });
+
+    return glyphPaths;
+};
+
+/**
+ * Returns the advance width of a text.
+ *
+ * This is something different than Path.getBoundingBox() as for example a
+ * suffixed whitespace increases the advanceWidth but not the bounding box
+ * or an overhanging letter like a calligraphic 'f' might have a quite larger
+ * bounding box than its advance width.
+ *
+ * This corresponds to canvas2dContext.measureText(text).width
+ *
+ * @param  {string} text - The text to create.
+ * @param  {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
+ * @param  {GlyphRenderOptions=} options
+ * @return advance width
+ */
+Font.prototype.getAdvanceWidth = function(text, fontSize, options) {
+    return this.forEachGlyph(text, 0, 0, fontSize, options, function() {});
+};
+
+/**
+ * Draw the text on the given drawing context.
+ * @param  {CanvasRenderingContext2D} ctx - A 2D drawing context, like Canvas.
+ * @param  {string} text - The text to create.
+ * @param  {number} [x=0] - Horizontal position of the beginning of the text.
+ * @param  {number} [y=0] - Vertical position of the *baseline* of the text.
+ * @param  {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
+ * @param  {GlyphRenderOptions=} options
+ */
+Font.prototype.draw = function(ctx, text, x, y, fontSize, options) {
+    this.getPath(text, x, y, fontSize, options).draw(ctx);
+};
+
+/**
+ * Draw the points of all glyphs in the text.
+ * On-curve points will be drawn in blue, off-curve points will be drawn in red.
+ * @param {CanvasRenderingContext2D} ctx - A 2D drawing context, like Canvas.
+ * @param {string} text - The text to create.
+ * @param {number} [x=0] - Horizontal position of the beginning of the text.
+ * @param {number} [y=0] - Vertical position of the *baseline* of the text.
+ * @param {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
+ * @param {GlyphRenderOptions=} options
+ */
+Font.prototype.drawPoints = function(ctx, text, x, y, fontSize, options) {
+    this.forEachGlyph(text, x, y, fontSize, options, function(glyph, gX, gY, gFontSize) {
+        glyph.drawPoints(ctx, gX, gY, gFontSize);
+    });
+};
+
+/**
+ * Draw lines indicating important font measurements for all glyphs in the text.
+ * Black lines indicate the origin of the coordinate system (point 0,0).
+ * Blue lines indicate the glyph bounding box.
+ * Green line indicates the advance width of the glyph.
+ * @param {CanvasRenderingContext2D} ctx - A 2D drawing context, like Canvas.
+ * @param {string} text - The text to create.
+ * @param {number} [x=0] - Horizontal position of the beginning of the text.
+ * @param {number} [y=0] - Vertical position of the *baseline* of the text.
+ * @param {number} [fontSize=72] - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`.
+ * @param {GlyphRenderOptions=} options
+ */
+Font.prototype.drawMetrics = function(ctx, text, x, y, fontSize, options) {
+    this.forEachGlyph(text, x, y, fontSize, options, function(glyph, gX, gY, gFontSize) {
+        glyph.drawMetrics(ctx, gX, gY, gFontSize);
+    });
+};
+
+/**
+ * @param  {string}
+ * @return {string}
+ */
+Font.prototype.getEnglishName = function(name) {
+    var translations = this.names[name];
+    if (translations) {
+        return translations.en;
+    }
+};
+
+/**
+ * Validate
+ */
+Font.prototype.validate = function() {
+    var _this = this;
+
+    function assert(predicate, message) {
+    }
+
+    function assertNamePresent(name) {
+        var englishName = _this.getEnglishName(name);
+        assert(englishName && englishName.trim().length > 0);
+    }
+
+    // Identification information
+    assertNamePresent('fontFamily');
+    assertNamePresent('weightName');
+    assertNamePresent('manufacturer');
+    assertNamePresent('copyright');
+    assertNamePresent('version');
+
+    // Dimension information
+    assert(this.unitsPerEm > 0);
+};
+
+/**
+ * Convert the font object to a SFNT data structure.
+ * This structure contains all the necessary tables and metadata to create a binary OTF file.
+ * @return {opentype.Table}
+ */
+Font.prototype.toTables = function() {
+    return sfnt.fontToTable(this);
+};
+/**
+ * @deprecated Font.toBuffer is deprecated. Use Font.toArrayBuffer instead.
+ */
+Font.prototype.toBuffer = function() {
+    console.warn('Font.toBuffer is deprecated. Use Font.toArrayBuffer instead.');
+    return this.toArrayBuffer();
+};
+/**
+ * Converts a `opentype.Font` into an `ArrayBuffer`
+ * @return {ArrayBuffer}
+ */
+Font.prototype.toArrayBuffer = function() {
+    var sfntTable = this.toTables();
+    var bytes = sfntTable.encode();
+    var buffer = new ArrayBuffer(bytes.length);
+    var intArray = new Uint8Array(buffer);
+    for (var i = 0; i < bytes.length; i++) {
+        intArray[i] = bytes[i];
+    }
+
+    return buffer;
+};
+
+/**
+ * Initiate a download of the OpenType font.
+ */
+Font.prototype.download = function(fileName) {
+    var familyName = this.getEnglishName('fontFamily');
+    var styleName = this.getEnglishName('fontSubfamily');
+    fileName = fileName || familyName.replace(/\s/g, '') + '-' + styleName + '.otf';
+    var arrayBuffer = this.toArrayBuffer();
+
+    window.URL = window.URL || window.webkitURL;
+
+    if (window.URL) {
+        var dataView = new DataView(arrayBuffer);
+        var blob = new Blob([dataView], {type: 'font/opentype'});
+
+        var link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = fileName;
+
+        var event = document.createEvent('MouseEvents');
+        event.initEvent('click', true, false);
+        link.dispatchEvent(event);
+    } else {
+        console.warn('Font file could not be downloaded. Try using a different browser.');
+    }
+};
+/**
+ * @private
+ */
+Font.prototype.fsSelectionValues = {
+    ITALIC:              0x001, //1
+    UNDERSCORE:          0x002, //2
+    NEGATIVE:            0x004, //4
+    OUTLINED:            0x008, //8
+    STRIKEOUT:           0x010, //16
+    BOLD:                0x020, //32
+    REGULAR:             0x040, //64
+    USER_TYPO_METRICS:   0x080, //128
+    WWS:                 0x100, //256
+    OBLIQUE:             0x200  //512
+};
+
+/**
+ * @private
+ */
+Font.prototype.usWidthClasses = {
+    ULTRA_CONDENSED: 1,
+    EXTRA_CONDENSED: 2,
+    CONDENSED: 3,
+    SEMI_CONDENSED: 4,
+    MEDIUM: 5,
+    SEMI_EXPANDED: 6,
+    EXPANDED: 7,
+    EXTRA_EXPANDED: 8,
+    ULTRA_EXPANDED: 9
+};
+
+/**
+ * @private
+ */
+Font.prototype.usWeightClasses = {
+    THIN: 100,
+    EXTRA_LIGHT: 200,
+    LIGHT: 300,
+    NORMAL: 400,
+    MEDIUM: 500,
+    SEMI_BOLD: 600,
+    BOLD: 700,
+    EXTRA_BOLD: 800,
+    BLACK:    900
+};
+
+// The `fvar` table stores font variation axes and instances.
+
+function addName(name, names) {
+    var nameString = JSON.stringify(name);
+    var nameID = 256;
+    for (var nameKey in names) {
+        var n = parseInt(nameKey);
+        if (!n || n < 256) {
+            continue;
+        }
+
+        if (JSON.stringify(names[nameKey]) === nameString) {
+            return n;
+        }
+
+        if (nameID <= n) {
+            nameID = n + 1;
+        }
+    }
+
+    names[nameID] = name;
+    return nameID;
+}
+
+function makeFvarAxis(n, axis, names) {
+    var nameID = addName(axis.name, names);
+    return [
+        {name: 'tag_' + n, type: 'TAG', value: axis.tag},
+        {name: 'minValue_' + n, type: 'FIXED', value: axis.minValue << 16},
+        {name: 'defaultValue_' + n, type: 'FIXED', value: axis.defaultValue << 16},
+        {name: 'maxValue_' + n, type: 'FIXED', value: axis.maxValue << 16},
+        {name: 'flags_' + n, type: 'USHORT', value: 0},
+        {name: 'nameID_' + n, type: 'USHORT', value: nameID}
+    ];
+}
+
+function parseFvarAxis(data, start, names) {
+    var axis = {};
+    var p = new parse.Parser(data, start);
+    axis.tag = p.parseTag();
+    axis.minValue = p.parseFixed();
+    axis.defaultValue = p.parseFixed();
+    axis.maxValue = p.parseFixed();
+    p.skip('uShort', 1);  // reserved for flags; no values defined
+    axis.name = names[p.parseUShort()] || {};
+    return axis;
+}
+
+function makeFvarInstance(n, inst, axes, names) {
+    var nameID = addName(inst.name, names);
+    var fields = [
+        {name: 'nameID_' + n, type: 'USHORT', value: nameID},
+        {name: 'flags_' + n, type: 'USHORT', value: 0}
+    ];
+
+    for (var i = 0; i < axes.length; ++i) {
+        var axisTag = axes[i].tag;
+        fields.push({
+            name: 'axis_' + n + ' ' + axisTag,
+            type: 'FIXED',
+            value: inst.coordinates[axisTag] << 16
+        });
+    }
+
+    return fields;
+}
+
+function parseFvarInstance(data, start, axes, names) {
+    var inst = {};
+    var p = new parse.Parser(data, start);
+    inst.name = names[p.parseUShort()] || {};
+    p.skip('uShort', 1);  // reserved for flags; no values defined
+
+    inst.coordinates = {};
+    for (var i = 0; i < axes.length; ++i) {
+        inst.coordinates[axes[i].tag] = p.parseFixed();
+    }
+
+    return inst;
+}
+
+function makeFvarTable(fvar, names) {
+    var result = new table.Table('fvar', [
+        {name: 'version', type: 'ULONG', value: 0x10000},
+        {name: 'offsetToData', type: 'USHORT', value: 0},
+        {name: 'countSizePairs', type: 'USHORT', value: 2},
+        {name: 'axisCount', type: 'USHORT', value: fvar.axes.length},
+        {name: 'axisSize', type: 'USHORT', value: 20},
+        {name: 'instanceCount', type: 'USHORT', value: fvar.instances.length},
+        {name: 'instanceSize', type: 'USHORT', value: 4 + fvar.axes.length * 4}
+    ]);
+    result.offsetToData = result.sizeOf();
+
+    for (var i = 0; i < fvar.axes.length; i++) {
+        result.fields = result.fields.concat(makeFvarAxis(i, fvar.axes[i], names));
+    }
+
+    for (var j = 0; j < fvar.instances.length; j++) {
+        result.fields = result.fields.concat(makeFvarInstance(j, fvar.instances[j], fvar.axes, names));
+    }
+
+    return result;
+}
+
+function parseFvarTable(data, start, names) {
+    var p = new parse.Parser(data, start);
+    var tableVersion = p.parseULong();
+    check.argument(tableVersion === 0x00010000, 'Unsupported fvar table version.');
+    var offsetToData = p.parseOffset16();
+    // Skip countSizePairs.
+    p.skip('uShort', 1);
+    var axisCount = p.parseUShort();
+    var axisSize = p.parseUShort();
+    var instanceCount = p.parseUShort();
+    var instanceSize = p.parseUShort();
+
+    var axes = [];
+    for (var i = 0; i < axisCount; i++) {
+        axes.push(parseFvarAxis(data, start + offsetToData + i * axisSize, names));
+    }
+
+    var instances = [];
+    var instanceStart = start + offsetToData + axisCount * axisSize;
+    for (var j = 0; j < instanceCount; j++) {
+        instances.push(parseFvarInstance(data, instanceStart + j * instanceSize, axes, names));
+    }
+
+    return {axes: axes, instances: instances};
+}
+
+var fvar = { make: makeFvarTable, parse: parseFvarTable };
+
+// The `GDEF` table contains various glyph properties
+
+var attachList = function() {
+    return {
+        coverage: this.parsePointer(Parser.coverage),
+        attachPoints: this.parseList(Parser.pointer(Parser.uShortList))
+    };
+};
+
+var caretValue = function() {
+    var format = this.parseUShort();
+    check.argument(format === 1 || format === 2 || format === 3,
+        'Unsupported CaretValue table version.');
+    if (format === 1) {
+        return { coordinate: this.parseShort() };
+    } else if (format === 2) {
+        return { pointindex: this.parseShort() };
+    } else if (format === 3) {
+        // Device / Variation Index tables unsupported
+        return { coordinate: this.parseShort() };
+    }
+};
+
+var ligGlyph = function() {
+    return this.parseList(Parser.pointer(caretValue));
+};
+
+var ligCaretList = function() {
+    return {
+        coverage: this.parsePointer(Parser.coverage),
+        ligGlyphs: this.parseList(Parser.pointer(ligGlyph))
+    };
+};
+
+var markGlyphSets = function() {
+    this.parseUShort(); // Version
+    return this.parseList(Parser.pointer(Parser.coverage));
+};
+
+function parseGDEFTable(data, start) {
+    start = start || 0;
+    var p = new Parser(data, start);
+    var tableVersion = p.parseVersion(1);
+    check.argument(tableVersion === 1 || tableVersion === 1.2 || tableVersion === 1.3,
+        'Unsupported GDEF table version.');
+    var gdef = {
+        version: tableVersion,
+        classDef: p.parsePointer(Parser.classDef),
+        attachList: p.parsePointer(attachList),
+        ligCaretList: p.parsePointer(ligCaretList),
+        markAttachClassDef: p.parsePointer(Parser.classDef)
+    };
+    if (tableVersion >= 1.2) {
+        gdef.markGlyphSets = p.parsePointer(markGlyphSets);
+    }
+    return gdef;
+}
+var gdef = { parse: parseGDEFTable };
+
+// The `GPOS` table contains kerning pairs, among other things.
+
+var subtableParsers$1 = new Array(10);         // subtableParsers[0] is unused
+
+// https://docs.microsoft.com/en-us/typography/opentype/spec/gpos#lookup-type-1-single-adjustment-positioning-subtable
+// this = Parser instance
+subtableParsers$1[1] = function parseLookup1() {
+    var start = this.offset + this.relativeOffset;
+    var posformat = this.parseUShort();
+    if (posformat === 1) {
+        return {
+            posFormat: 1,
+            coverage: this.parsePointer(Parser.coverage),
+            value: this.parseValueRecord()
+        };
+    } else if (posformat === 2) {
+        return {
+            posFormat: 2,
+            coverage: this.parsePointer(Parser.coverage),
+            values: this.parseValueRecordList()
+        };
+    }
+    check.assert(false, '0x' + start.toString(16) + ': GPOS lookup type 1 format must be 1 or 2.');
+};
+
+// https://docs.microsoft.com/en-us/typography/opentype/spec/gpos#lookup-type-2-pair-adjustment-positioning-subtable
+subtableParsers$1[2] = function parseLookup2() {
+    var start = this.offset + this.relativeOffset;
+    var posFormat = this.parseUShort();
+    check.assert(posFormat === 1 || posFormat === 2, '0x' + start.toString(16) + ': GPOS lookup type 2 format must be 1 or 2.');
+    var coverage = this.parsePointer(Parser.coverage);
+    var valueFormat1 = this.parseUShort();
+    var valueFormat2 = this.parseUShort();
+    if (posFormat === 1) {
+        // Adjustments for Glyph Pairs
+        return {
+            posFormat: posFormat,
+            coverage: coverage,
+            valueFormat1: valueFormat1,
+            valueFormat2: valueFormat2,
+            pairSets: this.parseList(Parser.pointer(Parser.list(function() {
+                return {        // pairValueRecord
+                    secondGlyph: this.parseUShort(),
+                    value1: this.parseValueRecord(valueFormat1),
+                    value2: this.parseValueRecord(valueFormat2)
+                };
+            })))
+        };
+    } else if (posFormat === 2) {
+        var classDef1 = this.parsePointer(Parser.classDef);
+        var classDef2 = this.parsePointer(Parser.classDef);
+        var class1Count = this.parseUShort();
+        var class2Count = this.parseUShort();
+        return {
+            // Class Pair Adjustment
+            posFormat: posFormat,
+            coverage: coverage,
+            valueFormat1: valueFormat1,
+            valueFormat2: valueFormat2,
+            classDef1: classDef1,
+            classDef2: classDef2,
+            class1Count: class1Count,
+            class2Count: class2Count,
+            classRecords: this.parseList(class1Count, Parser.list(class2Count, function() {
+                return {
+                    value1: this.parseValueRecord(valueFormat1),
+                    value2: this.parseValueRecord(valueFormat2)
+                };
+            }))
+        };
+    }
+};
+
+subtableParsers$1[3] = function parseLookup3() { return { error: 'GPOS Lookup 3 not supported' }; };
+subtableParsers$1[4] = function parseLookup4() { return { error: 'GPOS Lookup 4 not supported' }; };
+subtableParsers$1[5] = function parseLookup5() { return { error: 'GPOS Lookup 5 not supported' }; };
+subtableParsers$1[6] = function parseLookup6() { return { error: 'GPOS Lookup 6 not supported' }; };
+subtableParsers$1[7] = function parseLookup7() { return { error: 'GPOS Lookup 7 not supported' }; };
+subtableParsers$1[8] = function parseLookup8() { return { error: 'GPOS Lookup 8 not supported' }; };
+subtableParsers$1[9] = function parseLookup9() { return { error: 'GPOS Lookup 9 not supported' }; };
+
+// https://docs.microsoft.com/en-us/typography/opentype/spec/gpos
+function parseGposTable(data, start) {
+    start = start || 0;
+    var p = new Parser(data, start);
+    var tableVersion = p.parseVersion(1);
+    check.argument(tableVersion === 1 || tableVersion === 1.1, 'Unsupported GPOS table version ' + tableVersion);
+
+    if (tableVersion === 1) {
+        return {
+            version: tableVersion,
+            scripts: p.parseScriptList(),
+            features: p.parseFeatureList(),
+            lookups: p.parseLookupList(subtableParsers$1)
+        };
+    } else {
+        return {
+            version: tableVersion,
+            scripts: p.parseScriptList(),
+            features: p.parseFeatureList(),
+            lookups: p.parseLookupList(subtableParsers$1),
+            variations: p.parseFeatureVariationsList()
+        };
+    }
+
+}
+
+// GPOS Writing //////////////////////////////////////////////
+// NOT SUPPORTED
+var subtableMakers$1 = new Array(10);
+
+function makeGposTable(gpos) {
+    return new table.Table('GPOS', [
+        {name: 'version', type: 'ULONG', value: 0x10000},
+        {name: 'scripts', type: 'TABLE', value: new table.ScriptList(gpos.scripts)},
+        {name: 'features', type: 'TABLE', value: new table.FeatureList(gpos.features)},
+        {name: 'lookups', type: 'TABLE', value: new table.LookupList(gpos.lookups, subtableMakers$1)}
+    ]);
+}
+
+var gpos = { parse: parseGposTable, make: makeGposTable };
+
+// The `kern` table contains kerning pairs.
+
+function parseWindowsKernTable(p) {
+    var pairs = {};
+    // Skip nTables.
+    p.skip('uShort');
+    var subtableVersion = p.parseUShort();
+    check.argument(subtableVersion === 0, 'Unsupported kern sub-table version.');
+    // Skip subtableLength, subtableCoverage
+    p.skip('uShort', 2);
+    var nPairs = p.parseUShort();
+    // Skip searchRange, entrySelector, rangeShift.
+    p.skip('uShort', 3);
+    for (var i = 0; i < nPairs; i += 1) {
+        var leftIndex = p.parseUShort();
+        var rightIndex = p.parseUShort();
+        var value = p.parseShort();
+        pairs[leftIndex + ',' + rightIndex] = value;
+    }
+    return pairs;
+}
+
+function parseMacKernTable(p) {
+    var pairs = {};
+    // The Mac kern table stores the version as a fixed (32 bits) but we only loaded the first 16 bits.
+    // Skip the rest.
+    p.skip('uShort');
+    var nTables = p.parseULong();
+    //check.argument(nTables === 1, 'Only 1 subtable is supported (got ' + nTables + ').');
+    if (nTables > 1) {
+        console.warn('Only the first kern subtable is supported.');
+    }
+    p.skip('uLong');
+    var coverage = p.parseUShort();
+    var subtableVersion = coverage & 0xFF;
+    p.skip('uShort');
+    if (subtableVersion === 0) {
+        var nPairs = p.parseUShort();
+        // Skip searchRange, entrySelector, rangeShift.
+        p.skip('uShort', 3);
+        for (var i = 0; i < nPairs; i += 1) {
+            var leftIndex = p.parseUShort();
+            var rightIndex = p.parseUShort();
+            var value = p.parseShort();
+            pairs[leftIndex + ',' + rightIndex] = value;
+        }
+    }
+    return pairs;
+}
+
+// Parse the `kern` table which contains kerning pairs.
+function parseKernTable(data, start) {
+    var p = new parse.Parser(data, start);
+    var tableVersion = p.parseUShort();
+    if (tableVersion === 0) {
+        return parseWindowsKernTable(p);
+    } else if (tableVersion === 1) {
+        return parseMacKernTable(p);
+    } else {
+        throw new Error('Unsupported kern table version (' + tableVersion + ').');
+    }
+}
+
+var kern = { parse: parseKernTable };
+
+// The `loca` table stores the offsets to the locations of the glyphs in the font.
+
+// Parse the `loca` table. This table stores the offsets to the locations of the glyphs in the font,
+// relative to the beginning of the glyphData table.
+// The number of glyphs stored in the `loca` table is specified in the `maxp` table (under numGlyphs)
+// The loca table has two versions: a short version where offsets are stored as uShorts, and a long
+// version where offsets are stored as uLongs. The `head` table specifies which version to use
+// (under indexToLocFormat).
+function parseLocaTable(data, start, numGlyphs, shortVersion) {
+    var p = new parse.Parser(data, start);
+    var parseFn = shortVersion ? p.parseUShort : p.parseULong;
+    // There is an extra entry after the last index element to compute the length of the last glyph.
+    // That's why we use numGlyphs + 1.
+    var glyphOffsets = [];
+    for (var i = 0; i < numGlyphs + 1; i += 1) {
+        var glyphOffset = parseFn.call(p);
+        if (shortVersion) {
+            // The short table version stores the actual offset divided by 2.
+            glyphOffset *= 2;
+        }
+
+        glyphOffsets.push(glyphOffset);
+    }
+
+    return glyphOffsets;
+}
+
+var loca = { parse: parseLocaTable };
+
+// opentype.js
+
+/**
+ * The opentype library.
+ * @namespace opentype
+ */
+
+// File loaders /////////////////////////////////////////////////////////
+
+/**
+ * Loads a font from a URL. The callback throws an error message as the first parameter if it fails
+ * and the font as an ArrayBuffer in the second parameter if it succeeds.
+ * @param  {string} url - The URL of the font file.
+ * @param  {Function} callback - The function to call when the font load completes
+ */
+function loadFromUrl(url, callback) {
+    var request = new XMLHttpRequest();
+    request.open('get', url, true);
+    request.responseType = 'arraybuffer';
+    request.onload = function() {
+        if (request.response) {
+            return callback(null, request.response);
+        } else {
+            return callback('Font could not be loaded: ' + request.statusText);
+        }
+    };
+
+    request.onerror = function () {
+        callback('Font could not be loaded');
+    };
+
+    request.send();
+}
+
+// Table Directory Entries //////////////////////////////////////////////
+/**
+ * Parses OpenType table entries.
+ * @param  {DataView}
+ * @param  {Number}
+ * @return {Object[]}
+ */
+function parseOpenTypeTableEntries(data, numTables) {
+    var tableEntries = [];
+    var p = 12;
+    for (var i = 0; i < numTables; i += 1) {
+        var tag = parse.getTag(data, p);
+        var checksum = parse.getULong(data, p + 4);
+        var offset = parse.getULong(data, p + 8);
+        var length = parse.getULong(data, p + 12);
+        tableEntries.push({tag: tag, checksum: checksum, offset: offset, length: length, compression: false});
+        p += 16;
+    }
+
+    return tableEntries;
+}
+
+/**
+ * Parses WOFF table entries.
+ * @param  {DataView}
+ * @param  {Number}
+ * @return {Object[]}
+ */
+function parseWOFFTableEntries(data, numTables) {
+    var tableEntries = [];
+    var p = 44; // offset to the first table directory entry.
+    for (var i = 0; i < numTables; i += 1) {
+        var tag = parse.getTag(data, p);
+        var offset = parse.getULong(data, p + 4);
+        var compLength = parse.getULong(data, p + 8);
+        var origLength = parse.getULong(data, p + 12);
+        var compression = (void 0);
+        if (compLength < origLength) {
+            compression = 'WOFF';
+        } else {
+            compression = false;
+        }
+
+        tableEntries.push({tag: tag, offset: offset, compression: compression,
+            compressedLength: compLength, length: origLength});
+        p += 20;
+    }
+
+    return tableEntries;
+}
+
+/**
+ * @typedef TableData
+ * @type Object
+ * @property {DataView} data - The DataView
+ * @property {number} offset - The data offset.
+ */
+
+/**
+ * @param  {DataView}
+ * @param  {Object}
+ * @return {TableData}
+ */
+function uncompressTable(data, tableEntry) {
+    if (tableEntry.compression === 'WOFF') {
+        var inBuffer = new Uint8Array(data.buffer, tableEntry.offset + 2, tableEntry.compressedLength - 2);
+        var outBuffer = new Uint8Array(tableEntry.length);
+        tinyInflate(inBuffer, outBuffer);
+        if (outBuffer.byteLength !== tableEntry.length) {
+            throw new Error('Decompression error: ' + tableEntry.tag + ' decompressed length doesn\'t match recorded length');
+        }
+
+        var view = new DataView(outBuffer.buffer, 0);
+        return {data: view, offset: 0};
+    } else {
+        return {data: data, offset: tableEntry.offset};
+    }
+}
+
+// Public API ///////////////////////////////////////////////////////////
+
+/**
+ * Parse the OpenType file data (as an ArrayBuffer) and return a Font object.
+ * Throws an error if the font could not be parsed.
+ * @param  {ArrayBuffer}
+ * @param  {Object} opt - options for parsing
+ * @return {opentype.Font}
+ */
+function parseBuffer(buffer, opt) {
+    opt = (opt === undefined || opt === null) ?  {} : opt;
+
+    var indexToLocFormat;
+    var ltagTable;
+
+    // Since the constructor can also be called to create new fonts from scratch, we indicate this
+    // should be an empty font that we'll fill with our own data.
+    var font = new Font({empty: true});
+
+    // OpenType fonts use big endian byte ordering.
+    // We can't rely on typed array view types, because they operate with the endianness of the host computer.
+    // Instead we use DataViews where we can specify endianness.
+    var data = new DataView(buffer, 0);
+    var numTables;
+    var tableEntries = [];
+    var signature = parse.getTag(data, 0);
+    if (signature === String.fromCharCode(0, 1, 0, 0) || signature === 'true' || signature === 'typ1') {
+        font.outlinesFormat = 'truetype';
+        numTables = parse.getUShort(data, 4);
+        tableEntries = parseOpenTypeTableEntries(data, numTables);
+    } else if (signature === 'OTTO') {
+        font.outlinesFormat = 'cff';
+        numTables = parse.getUShort(data, 4);
+        tableEntries = parseOpenTypeTableEntries(data, numTables);
+    } else if (signature === 'wOFF') {
+        var flavor = parse.getTag(data, 4);
+        if (flavor === String.fromCharCode(0, 1, 0, 0)) {
+            font.outlinesFormat = 'truetype';
+        } else if (flavor === 'OTTO') {
+            font.outlinesFormat = 'cff';
+        } else {
+            throw new Error('Unsupported OpenType flavor ' + signature);
+        }
+
+        numTables = parse.getUShort(data, 12);
+        tableEntries = parseWOFFTableEntries(data, numTables);
+    } else {
+        throw new Error('Unsupported OpenType signature ' + signature);
+    }
+
+    var cffTableEntry;
+    var fvarTableEntry;
+    var glyfTableEntry;
+    var gdefTableEntry;
+    var gposTableEntry;
+    var gsubTableEntry;
+    var hmtxTableEntry;
+    var kernTableEntry;
+    var locaTableEntry;
+    var nameTableEntry;
+    var metaTableEntry;
+    var p;
+
+    for (var i = 0; i < numTables; i += 1) {
+        var tableEntry = tableEntries[i];
+        var table = (void 0);
+        switch (tableEntry.tag) {
+            case 'cmap':
+                table = uncompressTable(data, tableEntry);
+                font.tables.cmap = cmap.parse(table.data, table.offset);
+                font.encoding = new CmapEncoding(font.tables.cmap);
+                break;
+            case 'cvt ' :
+                table = uncompressTable(data, tableEntry);
+                p = new parse.Parser(table.data, table.offset);
+                font.tables.cvt = p.parseShortList(tableEntry.length / 2);
+                break;
+            case 'fvar':
+                fvarTableEntry = tableEntry;
+                break;
+            case 'fpgm' :
+                table = uncompressTable(data, tableEntry);
+                p = new parse.Parser(table.data, table.offset);
+                font.tables.fpgm = p.parseByteList(tableEntry.length);
+                break;
+            case 'head':
+                table = uncompressTable(data, tableEntry);
+                font.tables.head = head.parse(table.data, table.offset);
+                font.unitsPerEm = font.tables.head.unitsPerEm;
+                indexToLocFormat = font.tables.head.indexToLocFormat;
+                break;
+            case 'hhea':
+                table = uncompressTable(data, tableEntry);
+                font.tables.hhea = hhea.parse(table.data, table.offset);
+                font.ascender = font.tables.hhea.ascender;
+                font.descender = font.tables.hhea.descender;
+                font.numberOfHMetrics = font.tables.hhea.numberOfHMetrics;
+                break;
+            case 'hmtx':
+                hmtxTableEntry = tableEntry;
+                break;
+            case 'ltag':
+                table = uncompressTable(data, tableEntry);
+                ltagTable = ltag.parse(table.data, table.offset);
+                break;
+            case 'COLR':
+                table = uncompressTable(data, tableEntry);
+                font.tables.colr = colr.parse(table.data, table.offset);
+                break;
+            case 'CPAL':
+                table = uncompressTable(data, tableEntry);
+                font.tables.cpal = cpal.parse(table.data, table.offset);
+                break;
+            case 'maxp':
+                table = uncompressTable(data, tableEntry);
+                font.tables.maxp = maxp.parse(table.data, table.offset);
+                font.numGlyphs = font.tables.maxp.numGlyphs;
+                break;
+            case 'name':
+                nameTableEntry = tableEntry;
+                break;
+            case 'OS/2':
+                table = uncompressTable(data, tableEntry);
+                font.tables.os2 = os2.parse(table.data, table.offset);
+                break;
+            case 'post':
+                table = uncompressTable(data, tableEntry);
+                font.tables.post = post.parse(table.data, table.offset);
+                font.glyphNames = new GlyphNames(font.tables.post);
+                break;
+            case 'prep' :
+                table = uncompressTable(data, tableEntry);
+                p = new parse.Parser(table.data, table.offset);
+                font.tables.prep = p.parseByteList(tableEntry.length);
+                break;
+            case 'glyf':
+                glyfTableEntry = tableEntry;
+                break;
+            case 'loca':
+                locaTableEntry = tableEntry;
+                break;
+            case 'CFF ':
+                cffTableEntry = tableEntry;
+                break;
+            case 'kern':
+                kernTableEntry = tableEntry;
+                break;
+            case 'GDEF':
+                gdefTableEntry = tableEntry;
+                break;
+            case 'GPOS':
+                gposTableEntry = tableEntry;
+                break;
+            case 'GSUB':
+                gsubTableEntry = tableEntry;
+                break;
+            case 'meta':
+                metaTableEntry = tableEntry;
+                break;
+        }
+    }
+
+    var nameTable = uncompressTable(data, nameTableEntry);
+    font.tables.name = _name.parse(nameTable.data, nameTable.offset, ltagTable);
+    font.names = font.tables.name;
+
+    if (glyfTableEntry && locaTableEntry) {
+        var shortVersion = indexToLocFormat === 0;
+        var locaTable = uncompressTable(data, locaTableEntry);
+        var locaOffsets = loca.parse(locaTable.data, locaTable.offset, font.numGlyphs, shortVersion);
+        var glyfTable = uncompressTable(data, glyfTableEntry);
+        font.glyphs = glyf.parse(glyfTable.data, glyfTable.offset, locaOffsets, font, opt);
+    } else if (cffTableEntry) {
+        var cffTable = uncompressTable(data, cffTableEntry);
+        cff.parse(cffTable.data, cffTable.offset, font, opt);
+    } else {
+        throw new Error('Font doesn\'t contain TrueType or CFF outlines.');
+    }
+
+    var hmtxTable = uncompressTable(data, hmtxTableEntry);
+    hmtx.parse(font, hmtxTable.data, hmtxTable.offset, font.numberOfHMetrics, font.numGlyphs, font.glyphs, opt);
+    addGlyphNames(font, opt);
+
+    if (kernTableEntry) {
+        var kernTable = uncompressTable(data, kernTableEntry);
+        font.kerningPairs = kern.parse(kernTable.data, kernTable.offset);
+    } else {
+        font.kerningPairs = {};
+    }
+
+    if (gdefTableEntry) {
+        var gdefTable = uncompressTable(data, gdefTableEntry);
+        font.tables.gdef = gdef.parse(gdefTable.data, gdefTable.offset);
+    }
+
+    if (gposTableEntry) {
+        var gposTable = uncompressTable(data, gposTableEntry);
+        font.tables.gpos = gpos.parse(gposTable.data, gposTable.offset);
+        font.position.init();
+    }
+
+    if (gsubTableEntry) {
+        var gsubTable = uncompressTable(data, gsubTableEntry);
+        font.tables.gsub = gsub.parse(gsubTable.data, gsubTable.offset);
+    }
+
+    if (fvarTableEntry) {
+        var fvarTable = uncompressTable(data, fvarTableEntry);
+        font.tables.fvar = fvar.parse(fvarTable.data, fvarTable.offset, font.names);
+    }
+
+    if (metaTableEntry) {
+        var metaTable = uncompressTable(data, metaTableEntry);
+        font.tables.meta = meta.parse(metaTable.data, metaTable.offset);
+        font.metas = font.tables.meta;
+    }
+
+    return font;
+}
+
+/**
+ * Asynchronously load the font from a URL or a filesystem. When done, call the callback
+ * with two arguments `(err, font)`. The `err` will be null on success,
+ * the `font` is a Font object.
+ * We use the node.js callback convention so that
+ * opentype.js can integrate with frameworks like async.js.
+ * @alias opentype.load
+ * @param  {string} url - The URL of the font to load.
+ * @param  {Function} callback - The callback.
+ */
+function load(url, callback, opt) {
+    opt = (opt === undefined || opt === null) ?  {} : opt;
+
+    return new Promise(function (resolve, reject) {
+        loadFromUrl(url, function(err, arrayBuffer) {
+            if (err) {
+                if (callback) {
+                    return callback(err);
+                } else {
+                    reject(err);
+                }
+            }
+            var font;
+            try {
+                font = parseBuffer(arrayBuffer, opt);
+            } catch (e) {
+                if (callback) {
+                    return callback(e, null);
+                } else {
+                    reject(e);
+                }
+            }
+            if (callback) {
+                return callback(null, font);
+            } else {
+                resolve(font);
+            }
+        });
+    });
+}
+
+var opentype = /*#__PURE__*/Object.freeze({
+	__proto__: null,
+	Font: Font,
+	Glyph: Glyph,
+	Path: Path,
+	BoundingBox: BoundingBox,
+	_parse: parse,
+	parse: parseBuffer,
+	load: load,
+});
+
+export default opentype;
+export { BoundingBox, Font, Glyph, Path, parse as _parse, load, parseBuffer as parse };

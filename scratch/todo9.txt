@@ -12,8 +12,6 @@ Remove the dead fish scene from the clip.
 
 The impact section is just a continuation of the film description.
 
-For the story page, for mobile, the description text should be the same size as the bio.
-
 Put the orb underneath shari’s bio on s2 as well
 Size down by 10%
 Padding ~ 50% more
