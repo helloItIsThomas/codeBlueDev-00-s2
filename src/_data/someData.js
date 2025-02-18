@@ -41,7 +41,7 @@ module.exports = async function () {
 
   async function getFilms() {
     const films = await client.fetch(
-      '*[_type == "film"]{title,"description": pt::text(description), "synopsis": pt::text(synopsis), metadata {..., awards[]{ award -> { name, graphic{"url": asset->url}}}}, ctaButton, trailerLink,"posterImage": posterImage.asset->url, galleryImages[] {"url": asset->url}, isFeatured, credits, slug, "heroImage": heroImage.asset->url}'
+      '*[_type == "film"]{title,"description": pt::text(description),"impact": pt::text(impact), "synopsis": pt::text(synopsis), metadata {..., awards[]{ award -> { name, graphic{"url": asset->url}}}}, ctaButton, trailerLink,"posterImage": posterImage.asset->url, galleryImages[] {"url": asset->url}, isFeatured, credits, slug, "heroImage": heroImage.asset->url}'
     );
     return films;
   }

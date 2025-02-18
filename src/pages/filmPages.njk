@@ -88,7 +88,12 @@ layout: layouts/base.njk
 
 <div class="sevenThreeGrid margin0LR padding1LR">
   <div class="heroDescription mobileOnlyBlock" style="position: relative;">{{smartTextBox(film.description)}}</div>
-  <div class="heroDescription desktopOnlyBlock" style="position: relative;">{{film.description}}</div>
+  <div class="heroDescription desktopOnlyBlock" style="position: relative;">
+    {{film.description}}
+    <div class="vSpacer0"></div>
+    <div class="serifSubtitle">IMPACT</div>
+    {{film.impact}}
+  </div>
   <div style="position: relative;">
     <button onclick="window.open('{{ film.ctaButton.link }}', '_blank');" class="ctaButton">{{ film.ctaButton.name | upper }}</button>
     <div class="vSpacer0"></div>
