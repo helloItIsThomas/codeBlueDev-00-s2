@@ -3,6 +3,26 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  width: auto;
+  /* background-image: url("/assets/images/whales.png"); */
+  background: linear-gradient(rgb(3, 11, 34, 0.3), #030b22),
+    url("/assets/images/craw.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 20px;
+}
+/* url("/assets/images/coral-1.jpeg"); */
+
+#purpose::after {
+  /* content: ""; */
+  /* position: absolute; */
+  /* top: 0; */
+  /* left: 0; */
+  /* width: 100%; */
+  /* height: 100%; */
+
+  /* background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)); */
 }
 
 #purpose .foreground {

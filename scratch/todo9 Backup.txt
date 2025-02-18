@@ -1,0 +1,29 @@
+
+LETS FOCUS ON S2 for now.
+
+Remove the dead fish scene from the clip.
+
+S1 cursor is better than S2They should be moving much more subtle, like barely moving.
+They should try to avoid the cursor, the cursor is disturbing them.They should last longer too, 2x as long.
+
+Add the bullet stuff for Featured Media Partner
+
+The impact section is just a continuation of the film description.
+
+For grantees, have the Latest go the bottom so mission blue is always on top.
+Also make the logos automatically white.
+
+For S2, add an image behind Protection and Restoration section.
+
+For the story page, for mobile, the description text should be the same size as the bio.
+
+Put the orb underneath shari’s bio on s2 as well
+Size down by 10%
+Padding ~ 50% more
+
+Add the spin CTA on mobile for the orb.
+
+Add another breakpoint for the logo for tablet. 15%,
+Also it’s too big overall for all screens, 15%
+
+Put the Visit Website cat for FEATURED FILM below the collapsible text box.

@@ -8,7 +8,7 @@ More of the cursor guys.
 Make the buttons float to the bottom of the section.
 
 For the our mission bit on mobile, 
-Treat it like the featured film bit.Also get the autoplay video to work on the splash page, follow how we did it from the Our Mission Bit
+Treat it like the featured film bit. Also get the autoplay video to work on the splash page, follow how we did it from the Our Mission Bit
 
 Get rid of the contact button for the Our Mission bit for desktop and mobile.
 

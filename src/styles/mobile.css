@@ -151,6 +151,10 @@
   .lottieCanvas {
     transform: scale(0.6) !important;
   }
+
+  .spinCTASplash {
+    padding-bottom: 30% !important;
+  }
 }
 /* end of media query */
 
