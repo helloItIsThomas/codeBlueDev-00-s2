@@ -55,7 +55,7 @@ export class Triangle {
     if (1.0 - this.normalizedDistance > 0.95) {
       // if (mouseAcceleration > mouseAccThreshold) {
       if (this.active != true) {
-        this.make();
+        // this.make();
       }
       // }
     }
@@ -83,9 +83,9 @@ export class Triangle {
       this.newPos.y += Math.sin(awayAngle) * currentVelocity;
     }
 
-    this.alpha = Math.max(0, this.alpha - 0.035);
+    // this.alpha = Math.max(0, this.alpha - 0.035);
     if (this.alpha <= 0.001 && this.active == true) {
-      this.destroy();
+      // this.destroy();
     }
   }
 }
