@@ -28,7 +28,7 @@ export class Triangle {
 
   animate() {
     const angle = (this.id / sv.totalTriangles) * gui.angleMult * Math.PI * 2;
-    const vel = sv.clock * 15.0;
+    const vel = sv.clock * 45.0;
     const mouseAccThreshold = 0.025;
 
     this.newPos = {
@@ -53,14 +53,37 @@ export class Triangle {
       ) / sv.pApp.screen.width;
 
     if (1.0 - this.normalizedDistance > 0.95) {
-      if (mouseAcceleration > mouseAccThreshold) {
-        if (this.active != true) {
-          this.make();
-        }
+      // if (mouseAcceleration > mouseAccThreshold) {
+      if (this.active != true) {
+        this.make();
       }
+      // }
     }
 
-    this.alpha = Math.max(0, this.alpha - 0.015);
+    const mouseProximityThreshold = 200; // Distance threshold to consider "close"
+    const maxVelocity = 60.0; // Maximum velocity
+    const acceleration = 8.0; // Acceleration factor
+    let currentVelocity = 0; // Current velocity
+
+    if (this.distance < mouseProximityThreshold) {
+      const awayAngle = Math.atan2(
+        this.newPos.y - sv.mousePos.y * 10,
+        this.newPos.x - sv.mousePos.x * 10
+      );
+
+      // Increase velocity towards maxVelocity with acceleration
+      if (currentVelocity < maxVelocity) {
+        currentVelocity += acceleration * (1 - currentVelocity / maxVelocity);
+      }
+
+      // Ensure we do not exceed maxVelocity
+      currentVelocity = Math.min(currentVelocity, maxVelocity);
+
+      this.newPos.x += Math.cos(awayAngle) * currentVelocity;
+      this.newPos.y += Math.sin(awayAngle) * currentVelocity;
+    }
+
+    this.alpha = Math.max(0, this.alpha - 0.035);
     if (this.alpha <= 0.001 && this.active == true) {
       this.destroy();
     }

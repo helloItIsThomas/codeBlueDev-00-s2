@@ -173,12 +173,17 @@
 }
 
 .splineViewer {
+  cursor: grab;
   width: max(50vw, 50vh);
   overflow: hidden;
   position: absolute;
   height: 100vh;
   padding: 10%;
   opacity: 0;
+}
+
+.splineViewer:active {
+  cursor: grabbing;
 }
 
 /*  */

@@ -3,7 +3,6 @@ LETS FOCUS ON S2 for now.
 __________________________
 
 S1 cursor is better than S2
-They should be moving much more subtle, like barely moving.
 They should try to avoid the cursor, the cursor is disturbing them.They should last longer too, 2x as long.
 
 PRE-LAUNCH
