@@ -11,3 +11,45 @@
   padding-left: 0;
   border-radius: 20px;
 }
+
+.splineViewerStory {
+  /* position: relative; */
+  min-width: 50px;
+  min-height: 50px;
+}
+
+#storyOrbContainer {
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: auto;
+
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5rem;
+  min-width: 50px;
+  min-height: 50px;
+  max-height: 50vh !important;
+}
+
+.splineViewerContainer {
+  position: relative;
+  z-index: 1000;
+  /* max-height: 100% !important; */
+  min-width: 50px;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+  width: auto;
+
+  width: max(50vw, 70vh);
+  height: max(50vw, 70vh);
+  max-width: 50vw;
+  max-height: 50vw;
+}

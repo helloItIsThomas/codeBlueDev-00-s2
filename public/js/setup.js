@@ -217,7 +217,7 @@ async function mySetup() {
     );
   }
 
-  const cellW = 3;
+  const cellW = 2;
   const cellH = cellW;
   const geometry = new Geometry({
     topology: "triangle-strip",

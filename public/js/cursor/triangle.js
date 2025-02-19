@@ -28,7 +28,7 @@ export class Triangle {
 
   animate() {
     const angle = (this.id / sv.totalTriangles) * gui.angleMult * Math.PI * 2;
-    const vel = sv.clock * 45.0;
+    const vel = sv.clock * 15.0;
     const mouseAccThreshold = 0.025;
 
     this.newPos = {
@@ -60,7 +60,7 @@ export class Triangle {
       }
     }
 
-    this.alpha = Math.max(0, this.alpha - 0.035);
+    this.alpha = Math.max(0, this.alpha - 0.015);
     if (this.alpha <= 0.001 && this.active == true) {
       this.destroy();
     }

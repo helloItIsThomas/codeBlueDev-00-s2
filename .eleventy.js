@@ -17,7 +17,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.setServerOptions({
     browserSync: false,
     // Opt-out of the live reload snippet
-    enabled: true,
+    enabled: false,
   });
 
   return {
@@ -31,6 +31,6 @@ module.exports = function (eleventyConfig) {
       port: 8080,
     },
     // The 'watch' option enables Eleventy to automatically rebuild the site when files change.
-    watch: true,
+    watch: false,
   };
 };
